@@ -1,0 +1,38 @@
+#ifndef SEMBL_CUDA_ALGORITHM_DIFF_EVOL_H
+#define SEMBL_CUDA_ALGORITHM_DIFF_EVOL_H
+
+#include "common/include/semblance/algorithm/DifferentialEvolutionAlgorithm.hpp"
+
+#include <curand_kernel.h>
+
+class CudaDifferentialEvolutionAlgorithm : public DifferentialEvolutionAlgorithm {
+    protected:
+        curandState *st;
+
+    public:
+        CudaDifferentialEvolutionAlgorithm(
+            shared_ptr<Traveltime> model,
+            shared_ptr<DeviceContext> context,
+            DataContainerBuilder* dataBuilder,
+            unsigned int gen,
+            unsigned int ind
+        );
+
+        void computeSemblanceAtGpuForMidpoint(float m0) override;
+
+        void selectTracesToBeUsedForMidpoint(float m0) override;
+
+        void setupRandomSeedArray() override;
+
+        void startAllPopulations() override;
+
+        void mutateAllPopulations() override;
+
+        void crossoverPopulationIndividuals() override;
+
+        void advanceGeneration() override;
+
+        void selectBestIndividuals(vector<float>& resultArrays) override;
+};
+
+#endif
