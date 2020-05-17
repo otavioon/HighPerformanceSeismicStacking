@@ -1,0 +1,97 @@
+#ifndef COMMON_GATHER_HPP
+#define COMMON_GATHER_HPP
+
+#include "common/include/gpu/interface.h"
+#include "common/include/model/Cdp.hpp"
+
+#include <iostream>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
+
+#define MICRO2SECONDS 1e-6f
+
+using namespace std;
+
+class Gather {
+    private:
+        float apm, aph;
+
+        float azimuthInDegrees, azimuthInRad;
+
+        unsigned short dt;
+        float dtInSeconds;
+
+        float lowestAllowedMidpoint, biggestAllowedMidpoint;
+
+        unsigned int samplesCount, samplesPerTrace;
+
+        float tau;
+
+        int tauIndexDisplacement, windowSize;
+
+        map<float, Cdp> cdps;
+
+        vector<Trace> traces;
+
+        static unique_ptr<Gather> instance;
+
+    public:
+        static Gather* getInstance();
+
+        Gather();
+
+        void add(const Trace& trace);
+
+        float getApm() const;
+
+        const map<float, Cdp>& getCdps() const;
+
+        float getHalfoffsetOfTrace(unsigned int t) const;
+
+        float getMidpointOfTrace(unsigned int t) const;
+
+        float getAzimuthInDegrees() const;
+
+        float getAzimuthInRad() const;
+
+        gpu_gather_data_t getGpuGatherData() const;
+
+        float getTau() const;
+
+        int getTauIndexDisplacement() const;
+
+        Trace& getTraceAtIndex(unsigned int i);
+
+        unsigned int getTotalSamplesCount() const;
+
+        unsigned int getTotalTracesCount() const;
+
+        unsigned int getTotalCdpsCount() const;
+
+        unsigned int getSamplesPerTrace() const;
+
+        unsigned short getSamplePeriod() const;
+
+        float getSamplePeriodInSeconds() const;
+
+        unsigned int getWindowSize() const;
+
+        float getLowestAllowedMidpoint() const;
+
+        float getBiggestAllowedMidpoint() const;
+
+        void readGatherFromFile(const string& inFile);
+
+        void setAzimuthInDegree(float azInDeg);
+
+        void setAzimuthInRad(float azInRad);
+
+        void setLowestAllowedMidpoint(float l);
+
+        void setBiggestAllowedMidpoint(float b);
+
+        const string toString() const;
+};
+#endif
