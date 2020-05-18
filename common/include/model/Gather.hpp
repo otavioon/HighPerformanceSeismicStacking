@@ -84,6 +84,12 @@ class Gather {
 
         void readGatherFromFile(const string& inFile);
 
+        void setApm(float apm);
+
+        void setAph(float aph);
+
+        void setTau(float tau);
+
         void setAzimuthInDegree(float azInDeg);
 
         void setAzimuthInRad(float azInRad);

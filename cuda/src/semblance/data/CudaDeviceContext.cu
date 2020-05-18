@@ -4,11 +4,13 @@
 #include <sstream>
 #include <stdexcept>
 
+using namespace std;
+
 CudaDeviceContext::CudaDeviceContext(unsigned int devId) : DeviceContext(devId) {
 }
 
 void CudaDeviceContext::activate() const {
-    cudaError_t errorCode = cudaSetDevice(devId);
+    cudaError_t errorCode = cudaSetDevice(deviceId);
 
     if (errorCode != cudaSuccess) {
         ostringstream stringStream;

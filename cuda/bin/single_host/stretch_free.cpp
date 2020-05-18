@@ -1,13 +1,9 @@
-#include "common/include/parser/stretch_free.hpp"
-#include "cuda/include/execution/single-host/base.hpp"
+#include "common/include/parser/StretchFreeParser.hpp"
+#include "cuda/include/execution/CudaSingleHostRunner.hpp"
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
-
-    CudaSingleHostExecution singleHostExecution(
-        StretchFreeParser::getInstance()
-    );
-
+    CudaSingleHostRunner singleHostExecution(StretchFreeParser::getInstance());
     return singleHostExecution.main(argc, const_cast<const char**>(argv));
 }

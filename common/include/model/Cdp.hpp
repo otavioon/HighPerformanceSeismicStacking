@@ -22,6 +22,6 @@ class Cdp {
         void incrementSampleCountBy(unsigned int s);
 
         bool operator<(const Cdp& other) const;
-        bool operator==(unsigned int other_id) const;
+        bool operator==(int other_id) const;
 };
 #endif

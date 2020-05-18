@@ -1,13 +1,19 @@
 #include "cuda/include/semblance/algorithm/CudaAlgorithmBuilder.hpp"
 #include "cuda/include/semblance/algorithm/CudaLinearSearchAlgorithm.hpp"
 #include "cuda/include/semblance/algorithm/CudaDifferentialEvolutionAlgorithm.hpp"
-#include "cuda/include/semblance/algorithm/data/CudaDataContainerBuilder.hpp"
+#include "cuda/include/semblance/data/CudaDataContainerBuilder.hpp"
 
 #include <sstream>
 
 using namespace std;
 
-CudaAlgorithmBuilder::CudaAlgorithmBuilder(Traveltime* traveltime) : ComputeAlgorithmBuilder(traveltime) {
+unique_ptr<ComputeAlgorithmBuilder> CudaAlgorithmBuilder::instance = nullptr;
+
+ComputeAlgorithmBuilder* CudaAlgorithmBuilder::getInstance() {
+    if (instance == nullptr) {
+        instance = make_unique<CudaAlgorithmBuilder>();
+    }
+    return instance.get();
 }
 
 LinearSearchAlgorithm* CudaAlgorithmBuilder::buildLinearSearchAlgorithm(
@@ -24,8 +30,7 @@ LinearSearchAlgorithm* CudaAlgorithmBuilder::buildLinearSearchAlgorithm(
 
     DataContainerBuilder* dataFactory = CudaDataContainerBuilder::getInstance();
 
-    LinearSearchAlgorithm* computeAlgorithm =
-        new CudaLinearSearchAlgorithm(traveltime, context, dataFactory);
+    LinearSearchAlgorithm* computeAlgorithm = new CudaLinearSearchAlgorithm(traveltime, context, dataFactory);
 
     for (unsigned int i = 0; i < traveltime->getNumberOfParameters(); i++) {
         computeAlgorithm->setDiscretizationGranularityForParameter(i, discretizationArray[i]);

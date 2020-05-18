@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class SpitzFactory : public spitz::builder {
+class SpitzFactory : public spitz::factory {
     protected:
         Parser* parser;
 

@@ -48,7 +48,7 @@ void Parser::parseArguments(int argc, const char *argv[]) {
 
 const string Parser::getFilename() const {
     const string& inputFile = getInputFilePath();
-    int datasetNameStartingIndex = static_cast<unsigned int>(inputFile.find_last_of("/")) + 1;
+    unsigned int datasetNameStartingIndex = static_cast<unsigned int>(inputFile.find_last_of("/")) + 1;
 
     if (datasetNameStartingIndex == string::npos) {
         datasetNameStartingIndex = 0;
@@ -131,12 +131,11 @@ void Parser::readGather() const {
         throw invalid_argument("Not all arguments to read the gather have been provided.");
     }
 
-    float apm, aph, tau;
-    apm = argumentMap["apm"].as<float>();
-    aph = argumentMap["aph"].as<float>();
-    tau = argumentMap["tau"].as<float>();
-
     Gather* gather = Gather::getInstance();
+
+    gather->setApm(argumentMap["apm"].as<float>());
+    gather->setAph(argumentMap["aph"].as<float>());
+    gather->setTau(argumentMap["tau"].as<float>());
 
     if (argumentMap.count("azimuth")) {
         gather->setAzimuthInDegree(argumentMap["azimuth"].as<float>());

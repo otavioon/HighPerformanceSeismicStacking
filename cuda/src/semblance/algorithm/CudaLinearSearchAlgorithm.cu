@@ -1,5 +1,6 @@
 #include "cuda/include/semblance/algorithm/CudaLinearSearchAlgorithm.hpp"
-#include "cuda/include/semblance/data/container.hpp"
+#include "cuda/include/semblance/data/CudaDataContainer.hpp"
+
 #include "cuda/include/semblance/kernel/base.h"
 #include "cuda/include/semblance/kernel/linear_search.h"
 
@@ -13,7 +14,7 @@ CudaLinearSearchAlgorithm::CudaLinearSearchAlgorithm(
     shared_ptr<Traveltime> traveltime,
     shared_ptr<DeviceContext> context,
     DataContainerBuilder* dataBuilder
-) : LinearSearchAlgorithm(model, context, dataBuilder) {
+) : LinearSearchAlgorithm(traveltime, context, dataBuilder) {
 }
 
 void CudaLinearSearchAlgorithm::computeSemblanceAtGpuForMidpoint(float m0) {

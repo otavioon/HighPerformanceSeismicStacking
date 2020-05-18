@@ -1,6 +1,6 @@
 #include "cuda/include/execution/CudaSingleHostRunner.hpp"
-#include "cuda/include/semblance/algorithm/SemblanceCudaComputeAlgorithmBuilder.hpp"
-#include "cuda/include/semblance/algorithm/data/CudaDeviceContextBuilder.hpp"
+#include "cuda/include/semblance/algorithm/CudaAlgorithmBuilder.hpp"
+#include "cuda/include/semblance/data/CudaDeviceContextBuilder.hpp"
 
 #include <cuda.h>
 #include <sstream>
@@ -11,11 +11,7 @@
 using namespace std;
 
 CudaSingleHostRunner::CudaSingleHostRunner(Parser* parser) :
-    SingleHostExecution(
-        parser,
-        SemblanceCudaComputeAlgorithmBuilder::getInstance(),
-        CudaDeviceContextBuilder::getInstance()
-    ) {
+    SingleHostRunner(parser, CudaAlgorithmBuilder::getInstance(), CudaDeviceContextBuilder::getInstance()) {
 }
 
 unsigned int CudaSingleHostRunner::getNumOfDevices() const {

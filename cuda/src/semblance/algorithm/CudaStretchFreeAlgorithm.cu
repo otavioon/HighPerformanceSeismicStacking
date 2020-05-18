@@ -1,7 +1,8 @@
 #include "cuda/include/semblance/data/CudaDataContainer.hpp"
 #include "cuda/include/semblance/algorithm/CudaStretchFreeAlgorithm.hpp"
+
 #include "cuda/include/semblance/kernel/base.h"
-#include "cuda/include/semblance/kernel/CudaStretchFreeAlgorithm.h"
+#include "cuda/include/semblance/kernel/stretch_free.h"
 
 #include <sstream>
 #include <stdexcept>
@@ -9,10 +10,11 @@
 using namespace std;
 
 CudaStretchFreeAlgorithm::CudaStretchFreeAlgorithm(
-    shared_ptr<Traveltime> model,
+    shared_ptr<Traveltime> traveltime,
+    shared_ptr<DeviceContext> context,
     DataContainerBuilder* dataBuilder,
     const vector<string>& files
-) : StretchFreeAlgorithm(model, builder, files) {
+) : StretchFreeAlgorithm(traveltime, context, dataBuilder, files) {
 }
 
 void CudaStretchFreeAlgorithm::computeSemblanceAtGpuForMidpoint(float m0) {

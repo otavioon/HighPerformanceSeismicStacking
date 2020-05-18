@@ -1,6 +1,7 @@
 #include "common/include/output/Logger.hpp"
 #include "cuda/include/semblance/algorithm/CudaDifferentialEvolutionAlgorithm.hpp"
-#include "cuda/include/semblance/data/container.hpp"
+#include "cuda/include/semblance/data/CudaDataContainer.hpp"
+
 #include "cuda/include/semblance/kernel/base.h"
 #include "cuda/include/semblance/kernel/differential_evolution.h"
 
@@ -270,7 +271,7 @@ void CudaDifferentialEvolutionAlgorithm::selectBestIndividuals(vector<float>& re
     unsigned int numberOfResults = traveltime->getNumberOfResults();
     unsigned int sharedMemCount = numberOfResults * individualsPerPopulation * static_cast<unsigned int>(sizeof(float));
 
-    deviceResultArray.reset(dataFactory->build(numberOfResults * individualsPerPopulation));
+    deviceResultArray.reset(dataFactory->build(numberOfResults * individualsPerPopulation, deviceContext));
 
     kernelSelectBestIndividuals<<< dimGrid, individualsPerPopulation, sharedMemCount >>>(
         CUDA_DEV_PTR(x),

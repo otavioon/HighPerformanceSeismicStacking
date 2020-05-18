@@ -253,3 +253,15 @@ void Gather::setLowestAllowedMidpoint(float l) {
 void Gather::setBiggestAllowedMidpoint(float b) {
     biggestAllowedMidpoint = b;
 }
+
+void Gather::setApm(float apm) {
+    this->apm = apm;
+}
+
+void Gather::setAph(float aph) {
+    this->aph = aph;
+}
+
+void Gather::setTau(float tau) {
+    this->tau = tau;
+}

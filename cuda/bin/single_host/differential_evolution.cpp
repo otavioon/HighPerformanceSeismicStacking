@@ -1,13 +1,9 @@
-#include "common/include/parser/de.hpp"
-#include "cuda/include/execution/single-host/base.hpp"
+#include "common/include/parser/DifferentialEvolutionParser.hpp"
+#include "cuda/include/execution/CudaSingleHostRunner.hpp"
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
-
-    CudaSingleHostExecution singleHostExecution(
-        DifferentialEvolutionParser::getInstance()
-    );
-
+    CudaSingleHostRunner singleHostExecution(DifferentialEvolutionParser::getInstance());
     return singleHostExecution.main(argc, const_cast<const char**>(argv));
 }
