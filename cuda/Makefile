@@ -22,9 +22,9 @@ NVCCFLAGS += --use_fast_math -arch=sm_30 -Xcompiler -Wall -Xcompiler -fPIC -lcur
 #
 
 PROJECT_ROOT_PATH = ..
-BINARY_PATH = bin/
-SINGLE_HOST_PATH = $(BINARY_PATH)/single_host
-SPITS_PATH = $(BINARY_PATH)/spitz
+BINARY_PATH = $(PROJECT_ROOT_PATH)/cuda/bin/
+SINGLE_HOST_PATH = $(PROJECT_ROOT_PATH)/cuda/main/single_host
+SPITS_PATH = $(PROJECT_ROOT_PATH)/cuda/main/spitz
 
 CPP_SOURCE = $(shell find $(PROJECT_ROOT_PATH)/{common,cuda}/src -name '*.cpp')
 CPP_OBJECT = $(CPP_SOURCE:.cpp=.o)
