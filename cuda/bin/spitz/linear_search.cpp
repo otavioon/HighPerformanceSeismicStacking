@@ -1,5 +1,7 @@
-#include "common/include/parser/linear_search.hpp"
-#include "cuda/include/execution/spitz/builder.hpp"
+#include "common/include/execution/SpitzFactory.hpp"
+#include "common/include/parser/LinearSearchParser.hpp"
+#include "cuda/include/semblance/algorithm/CudaAlgorithmBuilder.hpp"
+#include "cuda/include/semblance/data/CudaDeviceContextBuilder.hpp"
 
 #include <memory>
 #include <spitz/spitz.hpp>
@@ -9,6 +11,8 @@ using namespace std;
 // Creates a builder class.
 #define SPITZ_ENTRY_POINT
 
-spitz::builder *spitz_factory = new SemblanceCudaSpitzFactory(
-    LinearSearchParser::getInstance()
+spitz::factory *spitz_factory = new SpitzFactory(
+    LinearSearchParser::getInstance(),
+    CudaAlgorithmBuilder::getInstance(),
+    CudaDeviceContextBuilder::getInstance()
 );

@@ -1,7 +1,6 @@
 #include "common/include/output/Logger.hpp"
 #include "cuda/include/semblance/algorithm/CudaDifferentialEvolutionAlgorithm.hpp"
 #include "cuda/include/semblance/data/CudaDataContainer.hpp"
-
 #include "cuda/include/semblance/kernel/base.h"
 #include "cuda/include/semblance/kernel/differential_evolution.h"
 
