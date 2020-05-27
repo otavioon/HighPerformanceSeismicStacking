@@ -1,9 +1,7 @@
-#ifndef CAPABILITY_H
-#define CAPABILITY_H
+#pragma once
 
 enum traveltime_t {
     CMP,
     ZOCRS,
     OCT
 };
-#endif

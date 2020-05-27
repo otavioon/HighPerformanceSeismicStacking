@@ -126,3 +126,7 @@ void ComputeAlgorithm::changeThreadCountTemporarilyTo(unsigned int t) {
 void ComputeAlgorithm::restoreThreadCount() {
     threadCount = threadCountToRestore;
 }
+
+void ComputeAlgorithm::setDeviceSourcePath(const string& path) {
+    deviceSource = path;
+}

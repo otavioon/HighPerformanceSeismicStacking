@@ -1,5 +1,4 @@
-#ifndef TRAVELTIME_PARAMETER_HPP
-#define TRAVELTIME_PARAMETER_HPP
+#pragma once
 
 #include <string>
 #include <utility>
@@ -24,5 +23,3 @@ class TraveltimeParameter {
 
         float getMaximum() const;
 };
-
-#endif

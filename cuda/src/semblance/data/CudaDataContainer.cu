@@ -87,9 +87,3 @@ void CudaDataContainer::reset() {
         throw runtime_error(stringStream.str());
     }
 }
-
-void CudaDataContainer::reallocate(unsigned int newElementCount) {
-    deallocate();
-    elementCount = newElementCount;
-    allocate();
-}

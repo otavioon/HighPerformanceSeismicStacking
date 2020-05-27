@@ -1,5 +1,4 @@
-#ifndef CUDA_KERNEL_BASE_H
-#define CUDA_KERNEL_BASE_H
+#pragma once
 
 #include "common/include/gpu/interface.h"
 #include <cuda.h>
@@ -40,4 +39,3 @@ __device__ enum gpu_error_code computeSemblance(
                 float t,
                 gpu_gather_data_t kernelData,
                 gpu_semblance_compute_data_t *computeData);
-#endif

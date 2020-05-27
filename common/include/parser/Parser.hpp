@@ -1,5 +1,4 @@
-#ifndef COMMON_PARSER_HPP
-#define COMMON_PARSER_HPP
+#pragma once
 
 #include "common/include/capability.h"
 #include "common/include/output/Logger.hpp"
@@ -48,4 +47,3 @@ class Parser {
             shared_ptr<Traveltime> traveltime
         ) const = 0;
 };
-#endif

@@ -1,5 +1,4 @@
-#ifndef CUDA_KERNEL_STRETCH_FREE_H
-#define CUDA_KERNEL_STRETCH_FREE_H
+#pragma once
 
 #include "common/include/gpu/interface.h"
 
@@ -32,4 +31,3 @@ void filterOutTracesForOffsetContinuationTrajectoryAndStretchFree(
     const float *parameterArray,
     unsigned int parameterCount
 );
-#endif

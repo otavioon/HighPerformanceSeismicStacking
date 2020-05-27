@@ -1,5 +1,4 @@
-#ifndef COMMON_RESULT_SET_HPP
-#define COMMON_RESULT_SET_HPP
+#pragma once
 
 #include "common/include/semblance/algorithm/ComputeAlgorithm.hpp"
 #include "common/include/semblance/result/MidpointResult.hpp"
@@ -29,4 +28,3 @@ class ResultSet {
 
         void setStatisticalResultForMidpoint(float m0, StatisticResult stat, float statValue);
 };
-#endif

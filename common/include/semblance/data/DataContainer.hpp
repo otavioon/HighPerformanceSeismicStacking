@@ -19,6 +19,8 @@ class DataContainer {
 
         unsigned int getElementCount() { return elementCount; };
 
+        void reallocate(unsigned int newElementCount);
+
         //
         // Virtual methods.
         //
@@ -32,8 +34,6 @@ class DataContainer {
         virtual void copyFromWithOffset(const vector<float>& sourceArray, unsigned int offset) = 0;
 
         virtual void pasteTo(vector<float>& targetArray) = 0;
-
-        virtual void reallocate(unsigned int newElementCount) = 0;
 
         virtual void reset() = 0;
 };

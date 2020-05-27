@@ -1,5 +1,4 @@
-#ifndef SEMBL_CUDA_ALGORITHM_STRETCH_FREE_HPP
-#define SEMBL_CUDA_ALGORITHM_STRETCH_FREE_HPP
+#pragma once
 
 #include "common/include/semblance/algorithm/StretchFreeAlgorithm.hpp"
 
@@ -15,8 +14,9 @@ class CudaStretchFreeAlgorithm : public StretchFreeAlgorithm {
             const vector<string>& files
         );
 
+        void compileDeviceKernel(const string& kernelSourcePath) override;
+
         void computeSemblanceAtGpuForMidpoint(float m0) override;
 
         void selectTracesToBeUsedForMidpoint(float m0) override;
 };
-#endif

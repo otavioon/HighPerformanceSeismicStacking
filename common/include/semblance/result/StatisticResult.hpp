@@ -1,5 +1,4 @@
-#ifndef COMMON_STATISTIC_RESULT_HPP
-#define COMMON_STATISTIC_RESULT_HPP
+#pragma once
 
 #include <string>
 #include <unordered_map>
@@ -13,5 +12,3 @@ enum class StatisticResult {
 };
 
 extern unordered_map<StatisticResult, string> STATISTIC_NAME_MAP;
-
-#endif

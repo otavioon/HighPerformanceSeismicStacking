@@ -1,5 +1,4 @@
-#ifndef COMMON_STRETCH_FREE_PARSER_HPP
-#define COMMON_STRETCH_FREE_PARSER_HPP
+#pragma once
 
 #include "common/include/parser/Parser.hpp"
 #include "common/include/semblance/data/DeviceContext.hpp"
@@ -23,4 +22,3 @@ class StretchFreeParser : public Parser {
 
         static Parser* getInstance();
 };
-#endif

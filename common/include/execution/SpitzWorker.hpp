@@ -1,5 +1,4 @@
-#ifndef COMMON_SPITZ_WORKER_HPP
-#define COMMON_SPITZ_WORKER_HPP
+#pragma once
 
 #include "common/include/parser/Parser.hpp"
 #include "common/include/semblance/algorithm/ComputeAlgorithmBuilder.hpp"
@@ -18,4 +17,3 @@ class SpitzWorker : public spitz::worker {
         SpitzWorker(ComputeAlgorithm* computeAlgorithm);
         int run(spitz::istream& task, const spitz::pusher& result);
 };
-#endif

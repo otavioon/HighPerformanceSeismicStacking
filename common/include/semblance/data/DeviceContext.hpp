@@ -1,5 +1,4 @@
-#ifndef SEMBL_DEVICE_CONTEXT_HPP
-#define SEMBL_DEVICE_CONTEXT_HPP
+#pragma once
 
 class DeviceContext {
     protected:
@@ -10,4 +9,3 @@ class DeviceContext {
         virtual ~DeviceContext();
         virtual void activate() const = 0;
 };
-#endif

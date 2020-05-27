@@ -1,5 +1,4 @@
-#ifndef TRAVELTIME_OFFSET_CONTINUATION_TRAJECTORY_H
-#define TRAVELTIME_OFFSET_CONTINUATION_TRAJECTORY_H
+#pragma once
 
 #include "common/include/traveltime/Traveltime.hpp"
 
@@ -18,4 +17,3 @@ class OffsetContinuationTrajectory : public Traveltime {
 
         const string toString() const override;
 };
-#endif

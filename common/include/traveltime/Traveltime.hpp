@@ -1,5 +1,4 @@
-#ifndef TRAVELTIME_HPP
-#define TRAVELTIME_HPP
+#pragma once
 
 #include "common/include/capability.h"
 #include "common/include/gpu/interface.h"
@@ -65,4 +64,3 @@ class Traveltime {
 
         virtual const string toString() const = 0;
 };
-#endif

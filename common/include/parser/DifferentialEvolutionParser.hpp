@@ -1,5 +1,4 @@
-#ifndef COMMON_DIFF_EVOLUTION_PARSER_HPP
-#define COMMON_DIFF_EVOLUTION_PARSER_HPP
+#pragma once
 
 #include "common/include/parser/Parser.hpp"
 
@@ -22,4 +21,3 @@ class DifferentialEvolutionParser : public Parser {
 
         static Parser* getInstance();
 };
-#endif

@@ -1,22 +1,23 @@
-#include "cuda/include/semblance/algorithm/CudaAlgorithmBuilder.hpp"
-#include "cuda/include/semblance/algorithm/CudaLinearSearchAlgorithm.hpp"
-#include "cuda/include/semblance/algorithm/CudaDifferentialEvolutionAlgorithm.hpp"
-#include "cuda/include/semblance/data/CudaDataContainerBuilder.hpp"
+#include "opencl/include/semblance/algorithm/OpenCLComputeAlgorithmBuilder.hpp"
+#include "opencl/include/semblance/algorithm/OpenCLLinearSearchAlgorithm.hpp"
+#include "opencl/include/semblance/algorithm/OpenCLDifferentialEvolutionAlgorithm.hpp"
+#include "opencl/include/semblance/data/OpenCLDataContainerBuilder.hpp"
 
+#include <memory>
 #include <sstream>
 
 using namespace std;
 
-unique_ptr<ComputeAlgorithmBuilder> CudaAlgorithmBuilder::instance = nullptr;
+unique_ptr<ComputeAlgorithmBuilder> OpenCLComputeAlgorithmBuilder::instance = nullptr;
 
-ComputeAlgorithmBuilder* CudaAlgorithmBuilder::getInstance() {
+ComputeAlgorithmBuilder* OpenCLComputeAlgorithmBuilder::getInstance() {
     if (instance == nullptr) {
-        instance = make_unique<CudaAlgorithmBuilder>();
+        instance = make_unique<OpenCLComputeAlgorithmBuilder>();
     }
     return instance.get();
 }
 
-LinearSearchAlgorithm* CudaAlgorithmBuilder::buildLinearSearchAlgorithm(
+LinearSearchAlgorithm* OpenCLComputeAlgorithmBuilder::buildLinearSearchAlgorithm(
     shared_ptr<Traveltime> traveltime,
     shared_ptr<DeviceContext> context,
     const vector<int>& discretizationArray
@@ -28,9 +29,9 @@ LinearSearchAlgorithm* CudaAlgorithmBuilder::buildLinearSearchAlgorithm(
         throw logic_error(exceptionString.str());
     }
 
-    DataContainerBuilder* dataFactory = CudaDataContainerBuilder::getInstance();
+    DataContainerBuilder* dataFactory = OpenCLDataContainerBuilder::getInstance();
 
-    LinearSearchAlgorithm* computeAlgorithm = new CudaLinearSearchAlgorithm(traveltime, context, dataFactory);
+    LinearSearchAlgorithm* computeAlgorithm = new OpenCLLinearSearchAlgorithm(traveltime, context, dataFactory);
 
     for (unsigned int i = 0; i < traveltime->getNumberOfParameters(); i++) {
         computeAlgorithm->setDiscretizationGranularityForParameter(i, discretizationArray[i]);
@@ -39,25 +40,25 @@ LinearSearchAlgorithm* CudaAlgorithmBuilder::buildLinearSearchAlgorithm(
     return computeAlgorithm;
 }
 
-DifferentialEvolutionAlgorithm* CudaAlgorithmBuilder::buildDifferentialEvolutionAlgorithm(
+DifferentialEvolutionAlgorithm* OpenCLComputeAlgorithmBuilder::buildDifferentialEvolutionAlgorithm(
     shared_ptr<Traveltime> traveltime,
     shared_ptr<DeviceContext> context,
     unsigned int generation,
     unsigned int individualsPerPopulation
 ) {
-    DataContainerBuilder* dataFactory = CudaDataContainerBuilder::getInstance();
+    DataContainerBuilder* dataFactory = OpenCLDataContainerBuilder::getInstance();
 
-    return new CudaDifferentialEvolutionAlgorithm(
+    return new OpenCLDifferentialEvolutionAlgorithm(
         traveltime, context, dataFactory, generation, individualsPerPopulation
     );
 }
 
-StretchFreeAlgorithm* CudaAlgorithmBuilder::buildStretchFreeAlgorithm(
+StretchFreeAlgorithm* OpenCLComputeAlgorithmBuilder::buildStretchFreeAlgorithm(
     shared_ptr<Traveltime> traveltime,
     shared_ptr<DeviceContext> context,
     const vector<string>& parameterFileArray
 ) {
-    DataContainerBuilder* dataFactory = CudaDataContainerBuilder::getInstance();
+    DataContainerBuilder* dataFactory = OpenCLDataContainerBuilder::getInstance();
 
     if (parameterFileArray.size() != traveltime->getNumberOfParameters()) {
         ostringstream exceptionString;

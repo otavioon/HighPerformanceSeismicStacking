@@ -1,5 +1,4 @@
-#ifndef TRAVELTIME_COMMON_MIDPOINT_H
-#define TRAVELTIME_COMMON_MIDPOINT_H
+#pragma once
 
 #include "common/include/traveltime/Traveltime.hpp"
 
@@ -18,4 +17,3 @@ class CommonMidPoint : public Traveltime {
 
         const string toString() const override;
 };
-#endif

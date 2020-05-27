@@ -1,5 +1,4 @@
-#ifndef SEMBL_CUDA_FACTORY_H
-#define SEMBL_CUDA_FACTORY_H
+#pragma once
 
 #include "common/include/semblance/algorithm/ComputeAlgorithmBuilder.hpp"
 #include "common/include/semblance/data/DeviceContext.hpp"
@@ -8,7 +7,7 @@
 
 using namespace std;
 
-class CudaAlgorithmBuilder : public ComputeAlgorithmBuilder {
+class CudaComputeAlgorithmBuilder : public ComputeAlgorithmBuilder {
     protected:
         static unique_ptr<ComputeAlgorithmBuilder> instance;
     public:
@@ -33,4 +32,3 @@ class CudaAlgorithmBuilder : public ComputeAlgorithmBuilder {
             const vector<string>& parameterFileArray
         ) override;
 };
-#endif

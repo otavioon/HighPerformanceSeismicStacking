@@ -1,5 +1,4 @@
-#ifndef COMMON_GATHER_HPP
-#define COMMON_GATHER_HPP
+#pragma once
 
 #include "common/include/gpu/interface.h"
 #include "common/include/model/Cdp.hpp"
@@ -100,4 +99,3 @@ class Gather {
 
         const string toString() const;
 };
-#endif

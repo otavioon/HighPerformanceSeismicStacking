@@ -1,5 +1,4 @@
-#ifndef COMMON_UTILS_HPP
-#define COMMON_UTILS_HPP
+#pragma once
 
 #include "common/include/model/Gather.hpp"
 #include "common/include/model/Trace.hpp"
@@ -23,4 +22,3 @@ class Utils {
         static float degreesToRad(float degree);
         static float radToDegrees(float rad);
 };
-#endif

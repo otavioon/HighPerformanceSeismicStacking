@@ -1,5 +1,4 @@
-#ifndef CUDA_SEMBL_DATA_CONTAINER_H
-#define CUDA_SEMBL_DATA_CONTAINER_H
+#pragma once
 
 #include "common/include/semblance/data/DataContainer.hpp"
 
@@ -28,7 +27,4 @@ class CudaDataContainer : public DataContainer {
         void pasteTo(std::vector<float>& targetArray) override;
 
         void reset() override;
-
-        void reallocate(unsigned int newElementCount) override;
 };
-#endif

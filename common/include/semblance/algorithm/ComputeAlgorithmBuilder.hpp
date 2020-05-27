@@ -1,5 +1,4 @@
-#ifndef COMMON_SEMBL_ALGO_BUILDER_HPP
-#define COMMON_SEMBL_ALGO_BUILDER_HPP
+#pragma once
 
 #include "common/include/semblance/algorithm/LinearSearchAlgorithm.hpp"
 #include "common/include/semblance/algorithm/DifferentialEvolutionAlgorithm.hpp"
@@ -30,4 +29,3 @@ class ComputeAlgorithmBuilder {
                 const vector<string>& parameterFileArray
         ) = 0;
 };
-#endif

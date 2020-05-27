@@ -1,5 +1,4 @@
-#ifndef SEMBL_CUDA_ALGORITHM_LINEAR_SEARCH_H
-#define SEMBL_CUDA_ALGORITHM_LINEAR_SEARCH_H
+#pragma once
 
 #include "common/include/semblance/algorithm/LinearSearchAlgorithm.hpp"
 
@@ -15,6 +14,6 @@ class CudaLinearSearchAlgorithm : public LinearSearchAlgorithm {
         );
 
         void computeSemblanceAtGpuForMidpoint(float m0) override;
+
         void selectTracesToBeUsedForMidpoint(float m0) override;
 };
-#endif

@@ -1,5 +1,4 @@
-#ifndef SEMBL_CUDA_ALGORITHM_DIFF_EVOL_H
-#define SEMBL_CUDA_ALGORITHM_DIFF_EVOL_H
+#pragma once
 
 #include "common/include/semblance/algorithm/DifferentialEvolutionAlgorithm.hpp"
 
@@ -33,6 +32,6 @@ class CudaDifferentialEvolutionAlgorithm : public DifferentialEvolutionAlgorithm
         void advanceGeneration() override;
 
         void selectBestIndividuals(vector<float>& resultArrays) override;
-};
 
-#endif
+        void compileDeviceKernel(const string& kernelSourcePath) override;
+};

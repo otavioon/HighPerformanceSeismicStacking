@@ -7,3 +7,10 @@ DataContainer::DataContainer(unsigned int count, shared_ptr<DeviceContext> conte
 
 DataContainer::~DataContainer() {
 }
+
+
+void DataContainer::reallocate(unsigned int newElementCount) {
+    this->deallocate();
+    elementCount = newElementCount;
+    this->allocate();
+}

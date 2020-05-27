@@ -1,5 +1,4 @@
-#ifndef COMMON_SPITZ_COMMITTER_HPP
-#define COMMON_SPITZ_COMMITTER_HPP
+#pragma once
 
 #include "common/include/model/Gather.hpp"
 #include "common/include/semblance/result/ResultSet.hpp"
@@ -37,4 +36,3 @@ class SpitzCommitter : public spitz::committer {
         int commit_task(spitz::istream& result);
         int commit_job(const spitz::pusher& final_result);
 };
-#endif

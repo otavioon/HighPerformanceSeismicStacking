@@ -1,5 +1,4 @@
-#ifndef COMMON_SPITZ_FACTORY_HPP
-#define COMMON_SPITZ_FACTORY_HPP
+#pragma once
 
 #include "common/include/execution/SpitzCommitter.hpp"
 #include "common/include/execution/SpitzJobManager.hpp"
@@ -48,4 +47,3 @@ class SpitzFactory : public spitz::factory {
 
         void initialize(int argc, const char *argv[]);
 };
-#endif

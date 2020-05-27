@@ -25,7 +25,13 @@ ComputeAlgorithm* DifferentialEvolutionParser::parseComputeAlgorithm(
     generations = argumentMap["generations"].as<unsigned int>();
     individualsPerPopulation = argumentMap["population-size"].as<unsigned int>();
 
-    return builder->buildDifferentialEvolutionAlgorithm(traveltime, deviceContext, generations, individualsPerPopulation);
+    ComputeAlgorithm* algorithm = builder->buildDifferentialEvolutionAlgorithm(traveltime, deviceContext, generations, individualsPerPopulation);
+
+    if (argumentMap.count("kernel-path")) {
+        algorithm->setDeviceSourcePath(argumentMap["kernel-path"].as<string>());
+    }
+
+    return algorithm;
 }
 
 Parser* DifferentialEvolutionParser::getInstance() {

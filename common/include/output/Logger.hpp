@@ -1,5 +1,4 @@
-#ifndef COMMON_LOGGER_HPP
-#define COMMON_LOGGER_HPP
+#pragma once
 
 #include <memory>
 #include <sstream>
@@ -37,4 +36,3 @@ class Logger {
 #define LOGL(m) Logger::print(LogLevel::LOW, m)
 #define LOGH(m) Logger::print(LogLevel::HIGH, m)
 #define LOGD(m) Logger::print(LogLevel::DEBUG, m)
-#endif

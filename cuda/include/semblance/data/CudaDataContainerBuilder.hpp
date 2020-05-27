@@ -1,5 +1,4 @@
-#ifndef CUDA_SEMBL_DATA_FACTORY_H
-#define CUDA_SEMBL_DATA_FACTORY_H
+#pragma once
 
 #include "common/include/semblance/data/DataContainerBuilder.hpp"
 
@@ -16,4 +15,3 @@ class CudaDataContainerBuilder : public DataContainerBuilder {
 
         static DataContainerBuilder* getInstance();
 };
-#endif

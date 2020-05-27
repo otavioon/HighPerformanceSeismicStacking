@@ -1,5 +1,4 @@
-#ifndef GPU_INTEFACE_H
-#define GPU_INTEFACE_H
+#pragma once
 
 #include "common/include/capability.h"
 
@@ -45,5 +44,3 @@ typedef struct {
     float mh;
     unsigned int numberOfParameters;
 } gpu_traveltime_parameter_t;
-
-#endif

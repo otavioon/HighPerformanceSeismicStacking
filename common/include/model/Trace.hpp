@@ -1,5 +1,4 @@
-#ifndef COMMON_TRACE_HPP
-#define COMMON_TRACE_HPP
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -117,4 +116,3 @@ class Trace {
 
         bool operator<(const Trace& other) const;
 };
-#endif

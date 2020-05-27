@@ -1,5 +1,4 @@
-#ifndef CUDA_SINGLE_HOST_H
-#define CUDA_SINGLE_HOST_H
+#pragma once
 
 #include "common/include/execution/SingleHostRunner.hpp"
 #include "common/include/parser/Parser.hpp"
@@ -11,4 +10,3 @@ class CudaSingleHostRunner : public SingleHostRunner {
         CudaSingleHostRunner(Parser* parser);
         unsigned int getNumOfDevices() const override;
 };
-#endif

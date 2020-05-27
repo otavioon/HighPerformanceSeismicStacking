@@ -1,5 +1,4 @@
-#ifndef COMMON_SPITZ_JOB_MANAGER_HPP
-#define COMMON_SPITZ_JOB_MANAGER_HPP
+#pragma once
 
 #include "common/include/model/Cdp.hpp"
 #include "common/include/model/Gather.hpp"
@@ -21,4 +20,3 @@ class SpitzJobManager : public spitz::job_manager {
 
         bool next_task(const spitz::pusher& task) override;
 };
-#endif

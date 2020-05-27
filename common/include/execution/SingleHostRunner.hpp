@@ -1,5 +1,4 @@
-#ifndef COMMON_SINGLE_HOST_RUNNER_HPP
-#define COMMON_SINGLE_HOST_RUNNER_HPP
+#pragma once
 
 #include "common/include/parser/Parser.hpp"
 #include "common/include/model/Gather.hpp"
@@ -59,4 +58,3 @@ class SingleHostRunner {
 
         virtual unsigned int getNumOfDevices() const = 0;
 };
-#endif

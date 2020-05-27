@@ -1,5 +1,4 @@
-#ifndef COMMON_STATISTIC_RESULT_MAP_HPP
-#define COMMON_STATISTIC_RESULT_MAP_HPP
+#pragma once
 
 #include <map>
 
@@ -12,4 +11,3 @@ class StatisticalMidpointResult {
         float getStatisticalResultForMidpoint(float m0) const;
         void setStatisticalResultForMidpoint(float m0, float stat);
 };
-#endif

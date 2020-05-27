@@ -21,7 +21,13 @@ ComputeAlgorithm* StretchFreeParser::parseComputeAlgorithm(
         nonStretchFreeParameterFiles = argumentMap["stack-datafiles"].as<vector<string>>();
     }
 
-    return builder->buildStretchFreeAlgorithm(traveltime, deviceContext, nonStretchFreeParameterFiles);
+    ComputeAlgorithm* algorithm = builder->buildStretchFreeAlgorithm(traveltime, deviceContext, nonStretchFreeParameterFiles);
+
+    if (argumentMap.count("kernel-path")) {
+        algorithm->setDeviceSourcePath(argumentMap["kernel-path"].as<string>());
+    }
+
+    return algorithm;
 }
 
 Parser* StretchFreeParser::getInstance() {

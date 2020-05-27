@@ -1,5 +1,4 @@
-#ifndef CUDA_KERNEL_LINEAR_SEARCH_H
-#define CUDA_KERNEL_LINEAR_SEARCH_H
+#pragma once
 
 #include "common/include/gpu/interface.h"
 #include <cuda.h>
@@ -30,4 +29,3 @@ void filterOutTracesForOffsetContinuationTrajectoryAndLinearSearch(
     const float *parameterArray,
     unsigned int parameterCount
 );
-#endif

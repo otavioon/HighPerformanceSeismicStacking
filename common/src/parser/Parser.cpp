@@ -21,7 +21,7 @@ Parser::Parser() : arguments("Allowed options") {
         ("input", value<string>()->required(), "*.su input data file.")
         ("lower-bounds", value<vector<float>>()->required(), "Lower bound for traveltime parameters.")
         ("lowest-midpoint", value<float>(), "Lower bound value for a CDP midpoint.")
-        ("opencl-kernel", value<string>(), "OpenCL's kernel location.")
+        ("kernel-path", value<string>(), "OpenCL's kernel location.")
         ("output", value<string>()->required(), "*.su output data prefix.")
         ("tau", value<float>(), "Semblance processing window given by w = 2 * tau + 1.")
         ("traveltime", value<string>()->required(), "Traveltime traveltime to be used.")

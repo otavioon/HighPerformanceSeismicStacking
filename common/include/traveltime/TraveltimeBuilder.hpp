@@ -1,5 +1,4 @@
-#ifndef TRAVELTIME_BUILDER_H
-#define TRAVELTIME_BUILDER_H
+#pragma once
 
 #include "common/include/traveltime/Traveltime.hpp"
 
@@ -33,4 +32,3 @@ class TraveltimeBuilder {
             float h0
         );
 };
-#endif

@@ -1,5 +1,4 @@
-#ifndef COMMON_SEMBL_CUDA_DEV_CONTEXT_BUILDER_HPP
-#define COMMON_SEMBL_CUDA_DEV_CONTEXT_BUILDER_HPP
+#pragma once
 
 #include "common/include/semblance/data/DeviceContextBuilder.hpp"
 #include "cuda/include/semblance/data/CudaDeviceContext.hpp"
@@ -17,4 +16,3 @@ class CudaDeviceContextBuilder : public DeviceContextBuilder {
 
         static DeviceContextBuilder* getInstance();
 };
-#endif

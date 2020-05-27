@@ -1,6 +1,6 @@
 #include "common/include/execution/SpitzFactory.hpp"
 #include "common/include/parser/DifferentialEvolutionParser.hpp"
-#include "cuda/include/semblance/algorithm/CudaAlgorithmBuilder.hpp"
+#include "cuda/include/semblance/algorithm/CudaComputeAlgorithmBuilder.hpp"
 #include "cuda/include/semblance/data/CudaDeviceContextBuilder.hpp"
 
 #include <memory>
@@ -13,6 +13,6 @@ using namespace std;
 
 spitz::factory *spitz_factory = new SpitzFactory(
     DifferentialEvolutionParser::getInstance(),
-    CudaAlgorithmBuilder::getInstance(),
+    CudaComputeAlgorithmBuilder::getInstance(),
     CudaDeviceContextBuilder::getInstance()
 );

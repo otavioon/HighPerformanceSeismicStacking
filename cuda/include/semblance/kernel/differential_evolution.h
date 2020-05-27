@@ -1,5 +1,4 @@
-#ifndef CUDA_KERNEL_DIFF_EVOL_H
-#define CUDA_KERNEL_DIFF_EVOL_H
+#pragma once
 
 #include "common/include/gpu/interface.h"
 #include <cuda.h>
@@ -89,4 +88,3 @@ void kernelSelectBestIndividuals(
     unsigned int numberOfCommonResults,
     unsigned int numberOfSamples
 );
-#endif

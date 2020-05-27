@@ -1,5 +1,4 @@
-#ifndef COMMON_SHARED_MIDPOINT_QUEUE_HPP
-#define COMMON_SHARED_MIDPOINT_QUEUE_HPP
+#pragma once
 
 #include <mutex>
 #include <queue>
@@ -16,4 +15,3 @@ class SharedMidpointQueue {
         float dequeueMidpoint();
         void enqueueMidpoint(float m0);
 };
-#endif

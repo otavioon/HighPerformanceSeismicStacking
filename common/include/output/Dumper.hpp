@@ -1,5 +1,4 @@
-#ifndef COMMON_DUMPER_HPP
-#define COMMON_DUMPER_HPP
+#pragma once
 
 #include "common/include/model/Gather.hpp"
 #include "common/include/semblance/algorithm/ComputeAlgorithm.hpp"
@@ -36,4 +35,3 @@ class Dumper {
 
         //void dumpAll(const SemblanceHostResult& results, float totalElapsedTime) const;
 };
-#endif

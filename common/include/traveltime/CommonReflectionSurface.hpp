@@ -1,5 +1,4 @@
-#ifndef TRAVELTIME_ZO_COMMON_REFLECTION_SURFACE_H
-#define TRAVELTIME_ZO_COMMON_REFLECTION_SURFACE_H
+#pragma once
 
 #include "common/include/traveltime/Traveltime.hpp"
 
@@ -37,4 +36,3 @@ class CommonReflectionSurface : public Traveltime {
 
         const string toString() const override;
 };
-#endif

@@ -1,5 +1,4 @@
-#ifndef SEMBL_ALGORITHM_DIFFERENTIAL_EVOLUTION_H
-#define SEMBL_ALGORITHM_DIFFERENTIAL_EVOLUTION_H
+#pragma once
 
 #include "common/include/semblance/algorithm/ComputeAlgorithm.hpp"
 
@@ -34,4 +33,3 @@ class DifferentialEvolutionAlgorithm : public ComputeAlgorithm {
         virtual void advanceGeneration() = 0;
         virtual void selectBestIndividuals(vector<float>& resultArrays) = 0;
 };
-#endif

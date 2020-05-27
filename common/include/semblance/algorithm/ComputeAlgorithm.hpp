@@ -1,5 +1,4 @@
-#ifndef SEMBL_ALGORITHM_BASE_H
-#define SEMBL_ALGORITHM_BASE_H
+#pragma once
 
 #include "common/include/model/Gather.hpp"
 #include "common/include/semblance/data/DeviceContext.hpp"
@@ -25,13 +24,13 @@ enum class GatherData {
 
 class ComputeAlgorithm {
     protected:
-        string algorithmName;
+        DataContainerBuilder* dataFactory;
+
+        string algorithmName, deviceSource;
 
         shared_ptr<DeviceContext> deviceContext;
 
         shared_ptr<Traveltime> traveltime;
-
-        DataContainerBuilder* dataFactory;
 
         unsigned int threadCount, threadCountToRestore;
 
@@ -82,6 +81,8 @@ class ComputeAlgorithm {
             chrono::duration<double> totalExecutionTime
         );
 
+        void setDeviceSourcePath(const string& path);
+
         //
         // Virtual methods.
         //
@@ -93,4 +94,3 @@ class ComputeAlgorithm {
         virtual void setUp() = 0;
         virtual const string toString() const = 0;
 };
-#endif

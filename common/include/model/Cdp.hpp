@@ -1,5 +1,4 @@
-#ifndef COMMON_CDP_HPP
-#define COMMON_CDP_HPP
+#pragma once
 
 #include "common/include/model/Trace.hpp"
 
@@ -24,4 +23,3 @@ class Cdp {
         bool operator<(const Cdp& other) const;
         bool operator==(int other_id) const;
 };
-#endif

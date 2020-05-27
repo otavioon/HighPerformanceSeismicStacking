@@ -1,5 +1,4 @@
-#ifndef COMMON_LS_PARSER_HPP
-#define COMMON_LS_PARSER_HPP
+#pragma once
 
 #include "common/include/parser/Parser.hpp"
 
@@ -20,4 +19,3 @@ class LinearSearchParser : public Parser {
 
         static Parser* getInstance();
 };
-#endif
