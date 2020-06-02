@@ -14,8 +14,6 @@ class CudaStretchFreeAlgorithm : public StretchFreeAlgorithm {
             const vector<string>& files
         );
 
-        void compileDeviceKernel(const string& kernelSourcePath) override;
-
         void computeSemblanceAtGpuForMidpoint(float m0) override;
 
         void selectTracesToBeUsedForMidpoint(float m0) override;

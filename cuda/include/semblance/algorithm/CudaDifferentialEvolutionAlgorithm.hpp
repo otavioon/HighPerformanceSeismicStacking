@@ -32,6 +32,4 @@ class CudaDifferentialEvolutionAlgorithm : public DifferentialEvolutionAlgorithm
         void advanceGeneration() override;
 
         void selectBestIndividuals(vector<float>& resultArrays) override;
-
-        void compileDeviceKernel(const string& kernelSourcePath) override;
 };
