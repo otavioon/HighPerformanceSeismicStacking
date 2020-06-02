@@ -83,7 +83,7 @@ void Gather::readGatherFromFile(const string& inFile) {
 
             Cdp cdp(m, cdpInfo);
 
-            stringStream << "CDP not found. Creating a new one with midpoint = " << m << endl;
+            stringStream << "CDP not found. Creating a new one with midpoint = " << m;
             LOGH(stringStream);
 
             cdps[m] = cdp;
@@ -95,7 +95,7 @@ void Gather::readGatherFromFile(const string& inFile) {
         }
 
         if (abs(h) > aph) {
-            stringStream << "discarding a trace of CDP (m = " << m << ") (|" << h << "| > " << aph << ")" << endl;
+            stringStream << "discarding a trace of CDP (m = " << m << ") (|" << h << "| > " << aph << ")";
             LOGH(stringStream);
             continue;
         }
@@ -113,13 +113,13 @@ void Gather::readGatherFromFile(const string& inFile) {
 
     std::sort(traces.begin(), traces.end());
 
-    stringStream << "Number of CDPs = " << cdps.size() << endl;
+    stringStream << "Number of CDPs = " << cdps.size();
     LOGI(stringStream);
 
-    stringStream << "Number of traces in the gather = " << traces.size() << endl;
+    stringStream << "Number of traces in the gather = " << traces.size();
     LOGI(stringStream);
 
-    stringStream << "Number of samples per trace = " << samplesPerTrace << endl;
+    stringStream << "Number of samples per trace = " << samplesPerTrace;
     LOGI(stringStream);
 
     fin.close();
