@@ -27,7 +27,7 @@ Parser::Parser() : arguments("Allowed options") {
         ("traveltime", value<string>()->required(), "Traveltime traveltime to be used.")
         ("upper-bounds", value<vector<float>>()->required(), "Upper bounds for traveltime parameters.")
         ("v0", value<float>(), "Velocity used to compute ZO-CRS A parameter.")
-        ("verbose", value<int>(), "Verbosity level. Must be in the [0..4] integer range.")
+        ("verbose", value<unsigned int>(), "Verbosity level. Must be in the [0..4] integer range.")
     ;
 }
 
