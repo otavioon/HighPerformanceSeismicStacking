@@ -31,8 +31,14 @@ class Logger {
         static void print(LogLevel lvl, ostringstream& stringStream);
 };
 
-#define LOGE(m) Logger::print(LogLevel::ERROR, m)
-#define LOGI(m) Logger::print(LogLevel::INFO, m)
-#define LOGL(m) Logger::print(LogLevel::LOW, m)
-#define LOGH(m) Logger::print(LogLevel::HIGH, m)
-#define LOGD(m) Logger::print(LogLevel::DEBUG, m)
+#define _LOG(level, message) do { \
+    ostringstream stringStream; \
+    stringStream << message; \
+    Logger::print(level, stringStream); \
+} while(0);
+
+#define LOGE(m) _LOG(LogLevel::ERROR, m)
+#define LOGI(m) _LOG(LogLevel::INFO, m)
+#define LOGL(m) _LOG(LogLevel::LOW, m)
+#define LOGH(m) _LOG(LogLevel::HIGH, m)
+#define LOGD(m) _LOG(LogLevel::DEBUG, m)
