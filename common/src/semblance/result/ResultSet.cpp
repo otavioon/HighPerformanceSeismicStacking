@@ -1,3 +1,4 @@
+#include "common/include/output/Logger.hpp"
 #include "common/include/semblance/result/ResultSet.hpp"
 
 ResultSet::ResultSet(
@@ -18,6 +19,8 @@ void ResultSet::setAllResultsForMidpoint(float m0, const vector<float>& array) {
 
         auto start = resultIterator + i * samplesPerResult;
         auto end = start + samplesPerResult;
+
+        LOGD("Writing " << samplesPerResult << " elements for i = " << i);
 
         resultArray[i].save(m0, start, end);
     }

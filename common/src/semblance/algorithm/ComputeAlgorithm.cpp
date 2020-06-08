@@ -1,4 +1,5 @@
 #include "common/include/semblance/algorithm/ComputeAlgorithm.hpp"
+#include "common/include/output/Logger.hpp"
 
 #include <numeric>
 
@@ -26,7 +27,11 @@ void ComputeAlgorithm::copyGatherDataToDevice() {
 
     unsigned int traceCount = gather->getTotalTracesCount();
 
+    LOGH("Allocating data for GatherData::MDPNT [" << traceCount << " elements]");
+
     deviceFilteredTracesDataMap[GatherData::MDPNT].reset(dataFactory->build(traceCount, deviceContext));
+
+    LOGH("Allocating data for GatherData::HLFOFFST [" << traceCount << " elements]");
 
     deviceFilteredTracesDataMap[GatherData::HLFOFFST].reset(dataFactory->build(traceCount, deviceContext));
 
@@ -40,9 +45,15 @@ void ComputeAlgorithm::copyGatherDataToDevice() {
     deviceFilteredTracesDataMap[GatherData::MDPNT]->copyFrom(tempMidpointArray);
     deviceFilteredTracesDataMap[GatherData::HLFOFFST]->copyFrom(tempHalfoffsetArray);
 
+    LOGH("Initializing GatherData::FILT_SAMPL");
+
     deviceFilteredTracesDataMap[GatherData::FILT_SAMPL].reset(dataFactory->build(deviceContext));
 
+    LOGH("Initializing GatherData::FILT_MDPNT");
+
     deviceFilteredTracesDataMap[GatherData::FILT_MDPNT].reset(dataFactory->build(deviceContext));
+
+    LOGH("Initializing GatherData::FILT_HLFOFFST");
 
     deviceFilteredTracesDataMap[GatherData::FILT_HLFOFFST].reset(dataFactory->build(deviceContext));
 }
@@ -54,7 +65,6 @@ float ComputeAlgorithm::getStatisticalResult(StatisticResult statResult) const {
 
     return computedStatisticalResults.at(statResult);
 }
-
 
 void ComputeAlgorithm::saveStatisticalResults(
     unsigned long totalUsedTracesCount,
@@ -91,6 +101,8 @@ void ComputeAlgorithm::copyOnlySelectedTracesToDevice(
 
     filteredTracesCount = accumulate(usedTraceMask.begin(), usedTraceMask.end(), 0);
 
+    LOGH("Selected " << filteredTracesCount << " traces");
+
     /* Reallocate filtered sample array */
     deviceFilteredTracesDataMap[GatherData::FILT_SAMPL]->reallocate(filteredTracesCount * gather->getSamplesPerTrace());
     deviceFilteredTracesDataMap[GatherData::FILT_MDPNT]->reallocate(filteredTracesCount);
@@ -120,10 +132,12 @@ void ComputeAlgorithm::copyOnlySelectedTracesToDevice(
 }
 
 void ComputeAlgorithm::changeThreadCountTemporarilyTo(unsigned int t) {
+    LOGD("Updating threadCount to " << t);
     threadCount = t;
 }
 
 void ComputeAlgorithm::restoreThreadCount() {
+    LOGD("Restoring threadCount to " << threadCountToRestore);
     threadCount = threadCountToRestore;
 }
 

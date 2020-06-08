@@ -83,8 +83,7 @@ void Gather::readGatherFromFile(const string& inFile) {
 
             Cdp cdp(m, cdpInfo);
 
-            stringStream << "CDP not found. Creating a new one with midpoint = " << m;
-            LOGH(stringStream);
+            LOGH("CDP not found. Creating a new one with midpoint = " << m);
 
             cdps[m] = cdp;
         }
@@ -95,8 +94,7 @@ void Gather::readGatherFromFile(const string& inFile) {
         }
 
         if (abs(h) > aph) {
-            stringStream << "discarding a trace of CDP (m = " << m << ") (|" << h << "| > " << aph << ")";
-            LOGH(stringStream);
+            LOGH("Discarding a trace of CDP (m = " << m << ") (|" << h << "| > " << aph << ")");
             continue;
         }
 
@@ -113,14 +111,9 @@ void Gather::readGatherFromFile(const string& inFile) {
 
     std::sort(traces.begin(), traces.end());
 
-    stringStream << "Number of CDPs = " << cdps.size();
-    LOGI(stringStream);
-
-    stringStream << "Number of traces in the gather = " << traces.size();
-    LOGI(stringStream);
-
-    stringStream << "Number of samples per trace = " << samplesPerTrace;
-    LOGI(stringStream);
+    LOGI("Number of CDPs = " << cdps.size());
+    LOGI("Number of traces in the gather = " << traces.size());
+    LOGI("Number of samples per trace = " << samplesPerTrace);
 
     fin.close();
 }
@@ -149,12 +142,12 @@ const string Gather::toString() const {
     stringStream << "tau = " << tau << endl;
     stringStream << "azimuth = " <<  azimuthInRad << " rad" << endl;
 
-    if (lowestAllowedMidpoint > 0) {
+    if (lowestAllowedMidpoint > numeric_limits<float>::min()) {
         stringStream << "Smallest allowed midpoint = ";
         stringStream << lowestAllowedMidpoint << " m" << endl;
     }
 
-    if (biggestAllowedMidpoint > 0) {
+    if (biggestAllowedMidpoint < numeric_limits<float>::max()) {
         stringStream << "Biggest allowed midpoint = ";
         stringStream << biggestAllowedMidpoint << " m" << endl;
     }
@@ -163,6 +156,8 @@ const string Gather::toString() const {
 }
 
 gpu_gather_data_t Gather::getGpuGatherData() const {
+
+    LOGD(toString());
 
     return {
         .samplesPerTrace = samplesPerTrace,

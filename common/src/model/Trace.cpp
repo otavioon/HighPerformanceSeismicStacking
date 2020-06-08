@@ -53,6 +53,8 @@ void Trace::read(ifstream& fin, float azimuthInRad) {
 
     samples.resize(info.ns);
 
+    LOGD("Reading " << samples.size() * sizeof(float) << " bytes of data");
+
     if (fin.read(reinterpret_cast<char*>(samples.data()), samples.size() * sizeof(float)).eof()) {
         throw runtime_error("end of file reached before reading all samples.");
     }

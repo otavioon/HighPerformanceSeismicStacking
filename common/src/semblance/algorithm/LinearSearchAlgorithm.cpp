@@ -1,3 +1,4 @@
+#include "common/include/output/Logger.hpp"
 #include "common/include/semblance/algorithm/LinearSearchAlgorithm.hpp"
 
 #include <algorithm>
@@ -60,6 +61,8 @@ void LinearSearchAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
     }
 
     selectTracesToBeUsedForMidpoint(m0);
+
+    LOGI("totalNumberOfParameters = " << totalNumberOfParameters);
 
     for (unsigned int i = 0; i < totalNumberOfParameters; i++) {
 
@@ -138,6 +141,8 @@ unsigned int LinearSearchAlgorithm::getParameterArrayStep() const {
 }
 
 void LinearSearchAlgorithm::setupArrays() {
+    ostringstream stringStream;
+
     Gather* gather = Gather::getInstance();
 
     unsigned int numberOfParameters = traveltime->getNumberOfParameters();
@@ -145,8 +150,16 @@ void LinearSearchAlgorithm::setupArrays() {
     unsigned int numberOfSamples = gather->getSamplesPerTrace();
     unsigned int parameterArrayStep = getParameterArrayStep();
 
+    LOGI("Allocating data for deviceParameterArray [" << numberOfParameters * parameterArrayStep << " elements]");
+
     deviceParameterArray.reset(dataFactory->build(numberOfParameters * parameterArrayStep, deviceContext));
+
+    LOGI("Allocating data for deviceNotUsedCountArray [" << numberOfSamples * parameterArrayStep << " elements]");
+
     deviceNotUsedCountArray.reset(dataFactory->build(numberOfSamples * parameterArrayStep, deviceContext));
+
+    LOGI("Allocating data for deviceResultArray [" << numberOfResults * numberOfSamples << " elements]");
+
     deviceResultArray.reset(dataFactory->build(numberOfResults * numberOfSamples, deviceContext));
 
     computedResults.resize(numberOfResults * numberOfSamples);

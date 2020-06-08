@@ -53,9 +53,7 @@ int SpitzCommitter::commit_task(spitz::istream& result) {
 
     taskIndex++;
 
-    ostringstream stringStream;
-    stringStream << "[CO] Result committed. [" << taskIndex << "," << taskCount << "]" << endl;
-    LOGI(stringStream);
+    LOGI("[CO] Result committed. [" << taskIndex << "," << taskCount << "]" << endl);
 
     return 0;
 }
