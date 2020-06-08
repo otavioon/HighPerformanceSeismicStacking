@@ -1,3 +1,5 @@
+#include "common/include/output/Logger.hpp"
+#include "cuda/include/execution/CudaUtils.hpp"
 #include "cuda/include/semblance/algorithm/CudaLinearSearchAlgorithm.hpp"
 #include "cuda/include/semblance/data/CudaDataContainer.hpp"
 #include "cuda/include/semblance/kernel/base.h"
@@ -17,6 +19,9 @@ CudaLinearSearchAlgorithm::CudaLinearSearchAlgorithm(
 }
 
 void CudaLinearSearchAlgorithm::computeSemblanceAtGpuForMidpoint(float m0) {
+
+    LOGI("Computing semblance for m0 = " << m0);
+
     Gather* gather = Gather::getInstance();
 
     dim3 dimGrid(gather->getSamplesPerTrace());
@@ -32,6 +37,10 @@ void CudaLinearSearchAlgorithm::computeSemblanceAtGpuForMidpoint(float m0) {
     unsigned int sharedMemSizeCount =
         traveltime->getNumberOfResults() * threadCount * static_cast<unsigned int>(sizeof(float));
 
+    LOGD("threadCount = " << threadCount);
+    LOGD("getNumberOfResults = " << traveltime->getNumberOfResults());
+    LOGD("sharedMemSizeCount = " << sharedMemSizeCount);
+
     kernelLinearSearch<<< dimGrid, threadCount, sharedMemSizeCount >>>(
         CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::FILT_SAMPL]),
         CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::FILT_MDPNT]),
@@ -45,15 +54,8 @@ void CudaLinearSearchAlgorithm::computeSemblanceAtGpuForMidpoint(float m0) {
         CUDA_DEV_PTR(deviceNotUsedCountArray)
     );
 
-    cudaError_t errorCode = cudaGetLastError();
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA kernelLinearSearch<<<>>> launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
-
-    cudaDeviceSynchronize();
+    CUDA_ASSERT(cudaDeviceSynchronize());
+    CUDA_ASSERT(cudaGetLastError());
 }
 
 void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
@@ -65,9 +67,11 @@ void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
     vector<unsigned char> usedTraceMask(traceCount);
 
     unsigned char* deviceUsedTraceMaskArray;
-    cudaMalloc((void **) &deviceUsedTraceMaskArray, traceCount * sizeof(char));
+    CUDA_ASSERT(cudaMalloc((void **) &deviceUsedTraceMaskArray, traceCount * sizeof(unsigned char)));
 
     dim3 dimGrid(traceCount / threadCount + 1);
+
+    LOGI("Using " << dimGrid.x << " blocks for traces filtering (threadCount = "<< threadCount << ")");
 
     gpu_gather_data_t gatherData = gather->getGpuGatherData();
 
@@ -80,6 +84,7 @@ void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
     switch (traveltime->getModel()) {
         case CMP:
         case ZOCRS:
+            LOGD("Executing filterMidpointDependentTraces<<<>>> kernel");
             filterMidpointDependentTraces<<<dimGrid, threadCount>>>(
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::MDPNT]),
                 traceCount,
@@ -91,6 +96,7 @@ void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
             break;
 
         case OCT:
+            LOGD("Executing filterOutTracesForOffsetContinuationTrajectoryAndLinearSearch<<<>>> kernel");
             filterOutTracesForOffsetContinuationTrajectoryAndLinearSearch<<<dimGrid, threadCount>>>(
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::MDPNT]),
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::HLFOFFST]),
@@ -103,20 +109,17 @@ void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
                 getParameterArrayStep()
             );
             break;
+        default:
+            throw invalid_argument("Invalid traveltime model");
     }
 
-    cudaError_t errorCode = cudaGetLastError();
+    CUDA_ASSERT(cudaGetLastError());
 
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA kernel launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
+    CUDA_ASSERT(cudaDeviceSynchronize());
 
-    cudaDeviceSynchronize();
+    CUDA_ASSERT(cudaMemcpy(usedTraceMask.data(), deviceUsedTraceMaskArray, traceCount * sizeof(unsigned char), cudaMemcpyDeviceToHost));
 
-    cudaMemcpy(usedTraceMask.data(), deviceUsedTraceMaskArray, traceCount * sizeof(unsigned int), cudaMemcpyDeviceToHost);
-    cudaFree(deviceUsedTraceMaskArray);
+    CUDA_ASSERT(cudaFree(deviceUsedTraceMaskArray));
 
     copyOnlySelectedTracesToDevice(usedTraceMask);
 }

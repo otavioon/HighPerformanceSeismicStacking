@@ -1,3 +1,4 @@
+#include "cuda/include/execution/CudaUtils.hpp"
 #include "cuda/include/semblance/data/CudaDataContainer.hpp"
 #include "cuda/include/semblance/algorithm/CudaStretchFreeAlgorithm.hpp"
 #include "cuda/include/semblance/kernel/base.h"
@@ -46,15 +47,8 @@ void CudaStretchFreeAlgorithm::computeSemblanceAtGpuForMidpoint(float m0) {
         CUDA_DEV_PTR(deviceNotUsedCountArray)
     );
 
-    cudaError_t errorCode = cudaGetLastError();
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA kernelStretchFree launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
-
-    cudaDeviceSynchronize();
+    CUDA_ASSERT(cudaDeviceSynchronize());
+    CUDA_ASSERT(cudaGetLastError());
 }
 
 void CudaStretchFreeAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
@@ -106,18 +100,14 @@ void CudaStretchFreeAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
             break;
     }
 
-    cudaError_t errorCode = cudaGetLastError();
 
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA kernel launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
+    CUDA_ASSERT(cudaDeviceSynchronize());
 
-    cudaDeviceSynchronize();
+    CUDA_ASSERT(cudaGetLastError());
 
-    cudaMemcpy(usedTraceMask.data(), deviceUsedTraceMaskArray, traceCount * sizeof(unsigned int), cudaMemcpyDeviceToHost);
-    cudaFree(deviceUsedTraceMaskArray);
+    CUDA_ASSERT(cudaMemcpy(usedTraceMask.data(), deviceUsedTraceMaskArray, traceCount * sizeof(unsigned int), cudaMemcpyDeviceToHost));
+
+    CUDA_ASSERT(cudaFree(deviceUsedTraceMaskArray));
 
     copyOnlySelectedTracesToDevice(usedTraceMask);
 }

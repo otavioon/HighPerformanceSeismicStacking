@@ -1,4 +1,5 @@
 #include "common/include/output/Logger.hpp"
+#include "cuda/include/execution/CudaUtils.hpp"
 #include "cuda/include/semblance/algorithm/CudaDifferentialEvolutionAlgorithm.hpp"
 #include "cuda/include/semblance/data/CudaDataContainer.hpp"
 #include "cuda/include/semblance/kernel/base.h"
@@ -46,18 +47,13 @@ void CudaDifferentialEvolutionAlgorithm::computeSemblanceAtGpuForMidpoint(float 
         CUDA_DEV_PTR(deviceNotUsedCountArray)
     );
 
-    cudaError_t errorCode = cudaGetLastError();
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA kernelDifferentialEvolution<<<>>> launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
-
-    cudaDeviceSynchronize();
+    CUDA_ASSERT(cudaGetLastError());
+    CUDA_ASSERT(cudaDeviceSynchronize());
 }
 
 void CudaDifferentialEvolutionAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
+
+    LOGI("Selecting traces for m0 = " << m0);
 
     Gather* gather = Gather::getInstance();
 
@@ -66,7 +62,7 @@ void CudaDifferentialEvolutionAlgorithm::selectTracesToBeUsedForMidpoint(float m
     vector<unsigned char> usedTraceMask(traceCount);
 
     unsigned char* deviceUsedTraceMaskArray;
-    cudaMalloc((void **) &deviceUsedTraceMaskArray, traceCount * sizeof(char));
+    CUDA_ASSERT(cudaMalloc((void **) &deviceUsedTraceMaskArray, traceCount * sizeof(char)));
 
     dim3 dimGrid(traceCount / threadCount + 1);
 
@@ -107,18 +103,11 @@ void CudaDifferentialEvolutionAlgorithm::selectTracesToBeUsedForMidpoint(float m
             break;
     }
 
-    cudaError_t errorCode = cudaGetLastError();
+    CUDA_ASSERT(cudaGetLastError());
+    CUDA_ASSERT(cudaDeviceSynchronize());
 
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA kernel launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
-
-    cudaDeviceSynchronize();
-
-    cudaMemcpy(usedTraceMask.data(), deviceUsedTraceMaskArray, traceCount * sizeof(unsigned int), cudaMemcpyDeviceToHost);
-    cudaFree(deviceUsedTraceMaskArray);
+    CUDA_ASSERT(cudaMemcpy(usedTraceMask.data(), deviceUsedTraceMaskArray, traceCount * sizeof(unsigned char), cudaMemcpyDeviceToHost));
+    CUDA_ASSERT(cudaFree(deviceUsedTraceMaskArray));
 
     copyOnlySelectedTracesToDevice(usedTraceMask);
 }
@@ -131,20 +120,10 @@ void CudaDifferentialEvolutionAlgorithm::setupRandomSeedArray() {
 
     srand(static_cast<unsigned int>(time(NULL)));
 
-    kernelSetupRandomSeedArray<<< dimGrid, individualsPerPopulation >>>(
-        st,
-        rand()
-    );
+    kernelSetupRandomSeedArray<<< dimGrid, individualsPerPopulation >>>(st, rand());
 
-    cudaError_t errorCode = cudaGetLastError();
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA kernelSetupRandomSeedArray<<<>>> launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
-
-    cudaDeviceSynchronize();
+    CUDA_ASSERT(cudaGetLastError());
+    CUDA_ASSERT(cudaDeviceSynchronize());
 }
 
 void CudaDifferentialEvolutionAlgorithm::startAllPopulations() {
@@ -163,15 +142,8 @@ void CudaDifferentialEvolutionAlgorithm::startAllPopulations() {
         numberOfParameters
     );
 
-    cudaError_t errorCode = cudaGetLastError();
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA kernelStartPopulations<<<>>> launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
-
-    cudaDeviceSynchronize();
+    CUDA_ASSERT(cudaGetLastError());
+    CUDA_ASSERT(cudaDeviceSynchronize());
 
     fx->reset();
     fu->reset();
@@ -194,15 +166,8 @@ void CudaDifferentialEvolutionAlgorithm::mutateAllPopulations() {
         numberOfParameters
     );
 
-    cudaError_t errorCode = cudaGetLastError();
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA mutateAllPopulations<<<>>> launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
-
-    cudaDeviceSynchronize();
+    CUDA_ASSERT(cudaGetLastError());
+    CUDA_ASSERT(cudaDeviceSynchronize());
 }
 
 void CudaDifferentialEvolutionAlgorithm::crossoverPopulationIndividuals() {
@@ -221,15 +186,8 @@ void CudaDifferentialEvolutionAlgorithm::crossoverPopulationIndividuals() {
         numberOfParameters
     );
 
-    cudaError_t errorCode = cudaGetLastError();
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA kernelCrossoverPopulationIndividuals<<<>>> launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
-
-    cudaDeviceSynchronize();
+    CUDA_ASSERT(cudaGetLastError());
+    CUDA_ASSERT(cudaDeviceSynchronize());
 }
 
 void CudaDifferentialEvolutionAlgorithm::advanceGeneration() {
@@ -250,15 +208,8 @@ void CudaDifferentialEvolutionAlgorithm::advanceGeneration() {
         numberOfResults
     );
 
-    cudaError_t errorCode = cudaGetLastError();
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA kernelAdvanceGeneration<<<>>> launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
-
-    cudaDeviceSynchronize();
+    CUDA_ASSERT(cudaGetLastError());
+    CUDA_ASSERT(cudaDeviceSynchronize());
 }
 
 void CudaDifferentialEvolutionAlgorithm::selectBestIndividuals(vector<float>& resultArrays) {
@@ -281,15 +232,8 @@ void CudaDifferentialEvolutionAlgorithm::selectBestIndividuals(vector<float>& re
         gather->getSamplesPerTrace()
     );
 
-    cudaError_t errorCode = cudaGetLastError();
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA kernelSelectBestIndividuals<<<>>> launch failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
-
-    cudaDeviceSynchronize();
+    CUDA_ASSERT(cudaGetLastError());
+    CUDA_ASSERT(cudaDeviceSynchronize());
 
     deviceResultArray->pasteTo(resultArrays);
 }

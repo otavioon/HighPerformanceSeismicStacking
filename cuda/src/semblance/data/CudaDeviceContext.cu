@@ -1,3 +1,4 @@
+#include "cuda/include/execution/CudaUtils.hpp"
 #include "cuda/include/semblance/data/CudaDeviceContext.hpp"
 
 #include <cuda.h>
@@ -10,11 +11,5 @@ CudaDeviceContext::CudaDeviceContext(unsigned int devId) : DeviceContext(devId) 
 }
 
 void CudaDeviceContext::activate() const {
-    cudaError_t errorCode = cudaSetDevice(deviceId);
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA cudaSetDevice failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
+    CUDA_ASSERT(cudaSetDevice(deviceId));
 }

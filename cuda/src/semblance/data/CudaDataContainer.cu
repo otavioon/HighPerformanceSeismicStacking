@@ -1,8 +1,8 @@
 #include "common/include/output/Logger.hpp"
+#include "cuda/include/execution/CudaUtils.hpp"
 #include "cuda/include/semblance/data/CudaDataContainer.hpp"
 
 #include <cuda.h>
-#include <sstream>
 #include <stdexcept>
 
 using namespace std;
@@ -23,14 +23,8 @@ float* CudaDataContainer::getCudaAddress() const {
 }
 
 void CudaDataContainer::allocate() {
-    cudaError_t errorCode = cudaMalloc((void **) &cudaAddress, elementCount * sizeof(float));
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA buffer failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
-
+    CUDA_ASSERT(cudaMalloc((void **) &cudaAddress, elementCount * sizeof(float)));
+    LOGH("Allocating data container for " << elementCount << " elements.");
     reset();
 }
 
@@ -43,47 +37,27 @@ void CudaDataContainer::copyFrom(const vector<float>& sourceArray) {
 }
 
 void CudaDataContainer::copyFromWithOffset(const vector<float>& sourceArray, unsigned int offset) {
-    cudaError_t errorCode = cudaMemcpy(
+    CUDA_ASSERT(cudaMemcpy(
         cudaAddress + offset,
         sourceArray.data(),
         sourceArray.size() * sizeof(float),
         cudaMemcpyHostToDevice
-    );
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA memcpy failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
+    ));
 }
 
 void CudaDataContainer::deallocate() {
-    LOGI("Deallocatiog data container");
-    cudaFree(cudaAddress);
+    LOGH("Deallocating data container");
+    CUDA_ASSERT(cudaFree(cudaAddress));
 }
 
 void CudaDataContainer::pasteTo(vector<float>& targetArray) {
-    cudaError_t errorCode;
-
     if (elementCount > targetArray.size()) {
         throw invalid_argument("Allocated memory in GPU is different from target array size.");
     }
 
-    errorCode = cudaMemcpy(targetArray.data(), cudaAddress, elementCount * sizeof(float), cudaMemcpyDeviceToHost);
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA memcpy failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
+    CUDA_ASSERT(cudaMemcpy(targetArray.data(), cudaAddress, elementCount * sizeof(float), cudaMemcpyDeviceToHost));
 }
 
 void CudaDataContainer::reset() {
-    cudaError_t errorCode = cudaMemset(cudaAddress, 0, elementCount * sizeof(float));
-
-    if (errorCode != cudaSuccess) {
-        ostringstream stringStream;
-        stringStream << "Creating CUDA memset failed with error " << errorCode;
-        throw runtime_error(stringStream.str());
-    }
+    CUDA_ASSERT(cudaMemset(cudaAddress, 0, elementCount * sizeof(float)));
 }
