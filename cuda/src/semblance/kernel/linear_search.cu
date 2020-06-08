@@ -66,7 +66,6 @@ void kernelLinearSearch(const float *samples,
         memset(semblanceCompute.numeratorComponents, 0, MAX_WINDOW_SIZE * sizeof(float));
 
         for (unsigned int traceIndex = 0; traceIndex < traceCount; traceIndex++) {
-
             float t;
             float h = halfoffset[traceIndex];
             float m = midpoint[traceIndex];
@@ -94,7 +93,6 @@ void kernelLinearSearch(const float *samples,
         }
 
         if (usedCount) {
-
             float sumNumerator = 0;
             for (int j = 0; j < gatherData.windowSize; j++) {
                 sumNumerator += semblanceCompute.numeratorComponents[j] * semblanceCompute.numeratorComponents[j];
@@ -128,7 +126,8 @@ void kernelLinearSearch(const float *samples,
             if (threadSemblanceData[0] > resultArray[sampleIndex]) {
                 for (unsigned int i = 0; i < numberOfTotalParameters; i++) {
                     unsigned int step = i * samplesPerTrace;
-                    resultArray[step + sampleIndex] = threadSemblanceData[step];
+                    unsigned int sharedMemStep = i * arrayStep;
+                    resultArray[step + sampleIndex] = threadSemblanceData[sharedMemStep];
                 }
             }
         }
