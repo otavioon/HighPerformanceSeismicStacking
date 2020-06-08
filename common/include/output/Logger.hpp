@@ -33,6 +33,7 @@ class Logger {
 
 #define _LOG(level, message) do { \
     ostringstream stringStream; \
+    stringStream << "[" << __func__ << ":" << __LINE__ << "] "; \
     stringStream << message; \
     Logger::print(level, stringStream); \
 } while(0);
