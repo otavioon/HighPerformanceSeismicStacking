@@ -126,7 +126,9 @@ int SingleHostRunner::main(int argc, const char *argv[]) {
 
         // std::chrono::duration<double> elpsd_time = std::chrono::steady_clock::now() - st;
 
-        Dumper dumper(parser->getInputFilePath(), parser->getFilename());
+        Dumper dumper(parser->getOutputDirectory(), parser->getFilename());
+
+        dumper.createDir();
 
         dumper.dumpGatherParameters(parser->getFilename());
 
