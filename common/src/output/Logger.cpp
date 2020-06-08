@@ -37,7 +37,7 @@ void Logger::print(LogLevel lvl, const string& message) {
             cout << "ERROR: " << message << endl;
             break;
         case LogLevel::INFO:
-            cout << "INFO: " << message << endl;
+            cout << " INFO: " << message << endl;
             break;
         case LogLevel::LOW:
             cout << "  LOW: " << message << endl;
