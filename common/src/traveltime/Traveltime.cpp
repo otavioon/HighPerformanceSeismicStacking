@@ -20,7 +20,7 @@ unsigned int Traveltime::getNumberOfCommonResults() const {
 }
 
 unsigned int Traveltime::getNumberOfResults() const {
-    return getNumberOfCommonResults() + static_cast<unsigned int>(travelTimeParameters.size());
+    return getNumberOfCommonResults() + getNumberOfParameters();
 }
 
 const string Traveltime::getDescriptionForParameter(unsigned int i) const {
