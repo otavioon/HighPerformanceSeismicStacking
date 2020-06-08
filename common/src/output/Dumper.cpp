@@ -128,7 +128,7 @@ void Dumper::dumpStatisticalResult(const string& statResultName, const Statistic
     resultOutputFile.close();
 }
 
-void Dumper::dumptraveltime(Traveltime* model) const {
+void Dumper::dumpTraveltime(Traveltime* model) const {
     const string traveltimeFile = outputDirectoryPath + "traveltime.txt";
 
     ofstream modelOutputFile;

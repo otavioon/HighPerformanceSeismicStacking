@@ -132,6 +132,8 @@ int SingleHostRunner::main(int argc, const char *argv[]) {
 
         dumper.dumpGatherParameters(parser->getFilename());
 
+        dumper.dumpTraveltime(traveltime.get());
+
         for (unsigned int i = 0; i < traveltime->getNumberOfResults(); i++) {
             dumper.dumpResult(traveltime->getDescriptionForResult(i), resultSet->getArrayForResult(i));
         }

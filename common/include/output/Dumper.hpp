@@ -29,7 +29,7 @@ class Dumper {
 
         void dumpResult(const string& resultName, const MidpointResult& result) const;
 
-        void dumptraveltime(Traveltime* model) const;
+        void dumpTraveltime(Traveltime* model) const;
 
         void dumpStatisticalResult(const string& statResultName, const StatisticalMidpointResult& statResult) const;
 
