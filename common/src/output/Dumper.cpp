@@ -90,14 +90,14 @@ void Dumper::dumpResult(const string& resultName, const MidpointResult& result) 
 
         trace_info_t cdpInfo = cdp.getCdpInfo();
 
-        LOGI("Writing " << sizeof(trace_info_t) << " bytes related to header.");
+        LOGD("Writing " << sizeof(trace_info_t) << " bytes related to header.");
 
         resultOutputFile.write(
             reinterpret_cast<const char*>(&cdpInfo),
             sizeof(trace_info_t)
         );
 
-        LOGI("Writing " << samples.size() * sizeof(float) << " bytes related to data.");
+        LOGD("Writing " << samples.size() * sizeof(float) << " bytes related to data.");
 
         resultOutputFile.write(
             reinterpret_cast<const char*>(samples.data()),
