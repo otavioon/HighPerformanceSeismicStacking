@@ -18,7 +18,7 @@ void kernelLinearSearch(const float *samples,
 ) {
     extern __shared__ float threadSemblanceData[];
 
-    unsigned int arrayStep = blockDim.x;
+    unsigned int parameterArrayStep = blockDim.x;
 
     unsigned int parameterThreadIndex = threadIdx.x;
     unsigned int sampleIndex = blockIdx.x;
@@ -26,8 +26,7 @@ void kernelLinearSearch(const float *samples,
 
     unsigned int numberOfParameters = traveltime.numberOfParameters;
     unsigned int numberOfCommonResults = traveltime.numberOfCommonResults;
-    unsigned int numberOfTotalParameters =
-        numberOfParameters + numberOfCommonResults;
+    unsigned int numberOfTotalParameters = numberOfParameters + numberOfCommonResults;
 
     unsigned int samplesPerTrace = gatherData.samplesPerTrace;
 
@@ -40,7 +39,7 @@ void kernelLinearSearch(const float *samples,
         unsigned int usedCount = 0;
 
         threadSemblanceData[parameterThreadIndex] = 0;
-        threadSemblanceData[arrayStep + parameterThreadIndex] = 0;
+        threadSemblanceData[parameterArrayStep + parameterThreadIndex] = 0;
 
         referencePoint.t0 = sampleIndex * gatherData.dtInSeconds;
 
@@ -50,16 +49,16 @@ void kernelLinearSearch(const float *samples,
             parameterIndex < numberOfParameters;
             parameterIndex++) {
 
-            unsigned int step, sharedMemStep;
+            unsigned int step, sharedMemoryArrayStep;
 
-            step = parameterIndex * arrayStep;
-            sharedMemStep = step + traveltime.numberOfCommonResults * arrayStep;
+            step = parameterIndex * parameterArrayStep;
+            sharedMemoryArrayStep = step + traveltime.numberOfCommonResults * parameterArrayStep;
 
-            threadSemblanceData[sharedMemStep + parameterThreadIndex] =
-                parameterArray[step + parameterThreadIndex];
+            float parameterValue = parameterArray[step + parameterThreadIndex];
 
-            travelTimeThreadData.semblanceParameters[parameterIndex] =
-                parameterArray[step + parameterThreadIndex];
+            threadSemblanceData[sharedMemoryArrayStep + parameterThreadIndex] = parameterValue;
+
+            travelTimeThreadData.semblanceParameters[parameterIndex] = parameterValue;
         }
 
         semblanceCompute.denominatorSum = semblanceCompute.linearSum = 0;
@@ -100,7 +99,7 @@ void kernelLinearSearch(const float *samples,
 
             threadSemblanceData[parameterThreadIndex] =
                 sumNumerator / (usedCount * semblanceCompute.denominatorSum);
-            threadSemblanceData[arrayStep + parameterThreadIndex] =
+            threadSemblanceData[parameterArrayStep + parameterThreadIndex] =
                 semblanceCompute.linearSum / (usedCount * gatherData.windowSize);
         }
 
@@ -113,7 +112,7 @@ void kernelLinearSearch(const float *samples,
             if (parameterThreadIndex < s) {
                 if (threadSemblanceData[parameterThreadIndex] < threadSemblanceData[parameterThreadIndex + s]) {
                     for (unsigned int i = 0; i < numberOfTotalParameters; i++) {
-                        unsigned step = i * arrayStep;
+                        unsigned step = i * parameterArrayStep;
                         threadSemblanceData[step + parameterThreadIndex] =
                             threadSemblanceData[step + parameterThreadIndex + s];
                     }
@@ -125,9 +124,9 @@ void kernelLinearSearch(const float *samples,
         if (parameterThreadIndex == 0) {
             if (threadSemblanceData[0] > resultArray[sampleIndex]) {
                 for (unsigned int i = 0; i < numberOfTotalParameters; i++) {
-                    unsigned int step = i * samplesPerTrace;
-                    unsigned int sharedMemStep = i * arrayStep;
-                    resultArray[step + sampleIndex] = threadSemblanceData[sharedMemStep];
+                    unsigned int resultArrayStep = i * samplesPerTrace;
+                    unsigned int sharedMemoryArrayStep = i * parameterArrayStep;
+                    resultArray[resultArrayStep + sampleIndex] = threadSemblanceData[sharedMemoryArrayStep];
                 }
             }
         }
