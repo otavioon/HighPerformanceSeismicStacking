@@ -32,10 +32,12 @@ class Logger {
 };
 
 #define _LOG(level, message) do { \
-    ostringstream stringStream; \
-    stringStream << "[" << __func__ << ":" << __LINE__ << "] "; \
-    stringStream << message; \
-    Logger::print(level, stringStream); \
+    if (level <= Logger::getInstance()->getVerbosity()) { \
+        ostringstream stringStream; \
+        stringStream << "[" << __func__ << ":" << __LINE__ << "] "; \
+        stringStream << message; \
+        Logger::print(level, stringStream); \
+    } \
 } while(0);
 
 #define LOGE(m) _LOG(LogLevel::ERROR, m)
