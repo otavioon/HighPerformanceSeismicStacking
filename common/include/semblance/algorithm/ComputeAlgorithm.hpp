@@ -78,7 +78,8 @@ class ComputeAlgorithm {
 
         void saveStatisticalResults(
             unsigned long totalUsedTracesCount,
-            chrono::duration<double> totalExecutionTime
+            chrono::duration<double> totalExecutionTime,
+            chrono::duration<double> selectionExecutionTime
         );
 
         void setDeviceSourcePath(const string& path);

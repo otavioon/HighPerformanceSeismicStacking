@@ -1,3 +1,4 @@
+#include "common/include/execution/Utils.hpp"
 #include "common/include/output/Logger.hpp"
 #include "common/include/semblance/algorithm/LinearSearchAlgorithm.hpp"
 
@@ -34,7 +35,7 @@ void LinearSearchAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
     deviceResultArray->reset();
     deviceNotUsedCountArray->reset();
 
-    chrono::steady_clock::time_point kernelStartTimestamp;
+    chrono::duration<double> selectionExecutionTime = chrono::duration<double>::zero();
     chrono::duration<double> totalExecutionTime = chrono::duration<double>::zero();
 
     if (traveltime->getTraveltimeWord() == "oct") {
@@ -60,7 +61,7 @@ void LinearSearchAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
         deviceParameterArray->copyFrom(parameterSampleArray);
     }
 
-    selectTracesToBeUsedForMidpoint(m0);
+    MEASURE_EXEC_TIME(selectionExecutionTime, selectTracesToBeUsedForMidpoint(m0));
 
     LOGI("totalNumberOfParameters = " << totalNumberOfParameters);
 
@@ -79,9 +80,7 @@ void LinearSearchAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
 
             deviceParameterArray->copyFrom(tempParameterArray);
 
-            kernelStartTimestamp = chrono::steady_clock::now();
-            computeSemblanceAtGpuForMidpoint(m0);
-            totalExecutionTime += chrono::steady_clock::now() - kernelStartTimestamp;
+            MEASURE_EXEC_TIME(totalExecutionTime, computeSemblanceAtGpuForMidpoint(m0));
         }
     }
 
@@ -94,7 +93,7 @@ void LinearSearchAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
             static_cast<unsigned long>(numberOfSamplesPerTrace) *
             static_cast<unsigned long>(totalNumberOfParameters);
 
-    saveStatisticalResults(totalUsedTracesCount, totalExecutionTime);
+    saveStatisticalResults(totalUsedTracesCount, totalExecutionTime, selectionExecutionTime);
 }
 
 float LinearSearchAlgorithm::getParameterValueAt(unsigned int iterationNumber, unsigned int p) const {

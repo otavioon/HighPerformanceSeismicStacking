@@ -1,3 +1,4 @@
+#include "common/include/execution/Utils.hpp"
 #include "common/include/model/Trace.hpp"
 #include "common/include/semblance/algorithm/StretchFreeAlgorithm.hpp"
 
@@ -29,10 +30,10 @@ void StretchFreeAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
     deviceResultArray->reset();
     deviceNotUsedCountArray->reset();
 
-    selectTracesToBeUsedForMidpoint(m0);
-
-    chrono::steady_clock::time_point kernelStartTimestamp;
+    chrono::duration<double> selectionExecutionTime = chrono::duration<double>::zero();
     chrono::duration<double> totalExecutionTime = chrono::duration<double>::zero();
+
+     MEASURE_EXEC_TIME(selectionExecutionTime, selectTracesToBeUsedForMidpoint(m0));
 
     unsigned int idx = 0;
     for (int n = -NMAX; n <= NMAX; n++, idx++) {
@@ -47,9 +48,7 @@ void StretchFreeAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
 
             deviceParameterArray->copyFrom(tempParameterArray);
 
-            kernelStartTimestamp = chrono::steady_clock::now();
-            computeSemblanceAtGpuForMidpoint(m0);
-            totalExecutionTime += chrono::steady_clock::now() - kernelStartTimestamp;
+            MEASURE_EXEC_TIME(totalExecutionTime, computeSemblanceAtGpuForMidpoint(m0));
         }
     }
 
@@ -62,7 +61,7 @@ void StretchFreeAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
             static_cast<unsigned long>(numberOfSamplesPerTrace) *
             static_cast<unsigned long>(totalNumberOfParameters);
 
-    saveStatisticalResults(totalUsedTracesCount, totalExecutionTime);
+    saveStatisticalResults(totalUsedTracesCount, totalExecutionTime, selectionExecutionTime);
 }
 
 unsigned int StretchFreeAlgorithm::getTotalNumberOfParameters() const {

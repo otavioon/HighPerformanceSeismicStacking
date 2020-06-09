@@ -1,3 +1,4 @@
+#include "common/include/execution/Utils.hpp"
 #include "common/include/semblance/algorithm/DifferentialEvolutionAlgorithm.hpp"
 
 #include <sstream>
@@ -20,7 +21,7 @@ void DifferentialEvolutionAlgorithm::computeSemblanceAndParametersForMidpoint(fl
 
     unsigned int numberOfSamplesPerTrace = gather->getSamplesPerTrace();
 
-    chrono::steady_clock::time_point kernelStartTimestamp;
+    chrono::duration<double> selectionExecutionTime = chrono::duration<double>::zero();
     chrono::duration<double> totalExecutionTime = chrono::duration<double>::zero();
 
     deviceNotUsedCountArray->reset();
@@ -34,12 +35,10 @@ void DifferentialEvolutionAlgorithm::computeSemblanceAndParametersForMidpoint(fl
     deviceResultArray.swap(fx);
 
     /* Copy samples, midpoints and halfoffsets to the device */
-    selectTracesToBeUsedForMidpoint(m0);
+    MEASURE_EXEC_TIME(selectionExecutionTime, selectTracesToBeUsedForMidpoint(m0));
 
     /* Compute fitness for initial population */
-    kernelStartTimestamp = chrono::steady_clock::now();
-    computeSemblanceAtGpuForMidpoint(m0);
-    totalExecutionTime += chrono::steady_clock::now() - kernelStartTimestamp;
+    MEASURE_EXEC_TIME(totalExecutionTime, computeSemblanceAtGpuForMidpoint(m0));
 
     deviceParameterArray.swap(x);
     deviceResultArray.swap(fx);
@@ -55,9 +54,7 @@ void DifferentialEvolutionAlgorithm::computeSemblanceAndParametersForMidpoint(fl
         deviceParameterArray.swap(u);
         deviceResultArray.swap(fu);
 
-        kernelStartTimestamp = chrono::steady_clock::now();
-        computeSemblanceAtGpuForMidpoint(m0);
-        totalExecutionTime += chrono::steady_clock::now() - kernelStartTimestamp;
+        MEASURE_EXEC_TIME(totalExecutionTime, computeSemblanceAtGpuForMidpoint(m0));
 
         deviceParameterArray.swap(u);
         deviceResultArray.swap(fu);
@@ -74,7 +71,7 @@ void DifferentialEvolutionAlgorithm::computeSemblanceAndParametersForMidpoint(fl
             static_cast<unsigned long>(generations) *
             static_cast<unsigned long>(individualsPerPopulation);
 
-    saveStatisticalResults(totalUsedTracesCount, totalExecutionTime);
+    saveStatisticalResults(totalUsedTracesCount, totalExecutionTime, selectionExecutionTime);
 }
 
 unsigned int DifferentialEvolutionAlgorithm::getParameterArrayStep() const {

@@ -68,7 +68,8 @@ float ComputeAlgorithm::getStatisticalResult(StatisticResult statResult) const {
 
 void ComputeAlgorithm::saveStatisticalResults(
     unsigned long totalUsedTracesCount,
-    chrono::duration<double> totalExecutionTime
+    chrono::duration<double> totalExecutionTime,
+    chrono::duration<double> selectionExecutionTime
 ) {
     Gather* gather = Gather::getInstance();
 
@@ -90,6 +91,12 @@ void ComputeAlgorithm::saveStatisticalResults(
 
     computedStatisticalResults[StatisticResult::EFFICIENCY] =
         1.0f - static_cast<float>(notUsedTracesCount) / static_cast<float>(totalUsedTracesCount);
+
+    computedStatisticalResults[StatisticResult::SELECTED_TRACES] = static_cast<float>(filteredTracesCount);
+
+    computedStatisticalResults[StatisticResult::TOTAL_SELECTION_KERNEL_EXECUTION_TIME] = selectionExecutionTime.count();
+
+    computedStatisticalResults[StatisticResult::TOTAL_KERNEL_EXECUTION_TIME] = totalExecutionTime.count();
 }
 
 void ComputeAlgorithm::copyOnlySelectedTracesToDevice(

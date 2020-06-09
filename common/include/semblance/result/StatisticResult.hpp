@@ -8,6 +8,9 @@ using namespace std;
 enum class StatisticResult {
     EFFICIENCY,
     INTR_PER_SEC,
+    SELECTED_TRACES,
+    TOTAL_SELECTION_KERNEL_EXECUTION_TIME,
+    TOTAL_KERNEL_EXECUTION_TIME,
     CNT
 };
 
