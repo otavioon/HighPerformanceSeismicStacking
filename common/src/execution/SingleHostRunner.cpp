@@ -79,17 +79,10 @@ void SingleHostRunner::workerThread(SingleHostRunner *ref) {
 
         resultSet->setAllResultsForMidpoint(m0, computeAlgorithm->getComputedResults());
 
-        resultSet->setStatisticalResultForMidpoint(
-            m0,
-            StatisticResult::EFFICIENCY,
-            computeAlgorithm->getStatisticalResult(StatisticResult::EFFICIENCY)
-        );
-
-        resultSet->setStatisticalResultForMidpoint(
-            m0,
-            StatisticResult::INTR_PER_SEC,
-            computeAlgorithm->getStatisticalResult(StatisticResult::INTR_PER_SEC)
-        );
+        for (unsigned int statResultIdx = 0; statResultIdx < static_cast<unsigned int>(StatisticResult::CNT); statResultIdx++) {
+            StatisticResult statResult = static_cast<StatisticResult>(statResultIdx);
+            resultSet->setStatisticalResultForMidpoint(m0, statResult, computeAlgorithm->getStatisticalResult(statResult));
+        }
 
         resultSetMutex.unlock();
     }
@@ -138,15 +131,10 @@ int SingleHostRunner::main(int argc, const char *argv[]) {
             dumper.dumpResult(traveltime->getDescriptionForResult(i), resultSet->getArrayForResult(i));
         }
 
-        dumper.dumpStatisticalResult(
-            STATISTIC_NAME_MAP[StatisticResult::EFFICIENCY],
-            resultSet->get(StatisticResult::EFFICIENCY)
-        );
-
-        dumper.dumpStatisticalResult(
-            STATISTIC_NAME_MAP[StatisticResult::INTR_PER_SEC],
-            resultSet->get(StatisticResult::INTR_PER_SEC)
-        );
+        for (unsigned int i = 0; i < static_cast<unsigned int>(StatisticResult::CNT); i++) {
+            StatisticResult statResult = static_cast<StatisticResult>(i);
+            dumper.dumpStatisticalResult(STATISTIC_NAME_MAP[statResult], resultSet->get(statResult));
+        }
 
         return 0;
     }
