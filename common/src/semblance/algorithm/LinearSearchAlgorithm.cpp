@@ -63,6 +63,7 @@ void LinearSearchAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
 
     MEASURE_EXEC_TIME(selectionExecutionTime, selectTracesToBeUsedForMidpoint(m0));
 
+    LOGI("parameterArrayStep = " << parameterArrayStep);
     LOGI("totalNumberOfParameters = " << totalNumberOfParameters);
 
     for (unsigned int i = 0; i < totalNumberOfParameters; i++) {
@@ -76,6 +77,11 @@ void LinearSearchAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
 
             if ((i + 1) == totalNumberOfParameters) {
                 changeThreadCountTemporarilyTo((i + 1) % threadCount);
+            }
+            else if ((i + 1 + threadCount) >= totalNumberOfParameters) {
+                /* Next time we'll be running kernel with a smaller # of threads, so update parameterArrayStep. */
+                LOGI("Changing parameterArrayStep to " << totalNumberOfParameters % threadCount);
+                parameterArrayStep = totalNumberOfParameters % threadCount;
             }
 
             deviceParameterArray->copyFrom(tempParameterArray);
