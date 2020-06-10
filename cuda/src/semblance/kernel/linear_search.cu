@@ -20,7 +20,7 @@ void kernelLinearSearch(const float *samples,
 
     unsigned int parameterArrayStep = blockDim.x;
 
-    unsigned int parameterThreadIndex = threadIdx.x;
+    unsigned int threadIndex = threadIdx.x;
     unsigned int sampleIndex = blockIdx.x;
     unsigned int notUsedIndex = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -38,8 +38,8 @@ void kernelLinearSearch(const float *samples,
         unsigned int notUsedCount = 0;
         unsigned int usedCount = 0;
 
-        threadSemblanceData[parameterThreadIndex] = 0;
-        threadSemblanceData[parameterArrayStep + parameterThreadIndex] = 0;
+        threadSemblanceData[threadIndex] = 0;
+        threadSemblanceData[parameterArrayStep + threadIndex] = 0;
 
         referencePoint.t0 = sampleIndex * gatherData.dtInSeconds;
 
@@ -54,9 +54,9 @@ void kernelLinearSearch(const float *samples,
             step = parameterIndex * parameterArrayStep;
             sharedMemoryArrayStep = step + traveltime.numberOfCommonResults * parameterArrayStep;
 
-            float parameterValue = parameterArray[step + parameterThreadIndex];
+            float parameterValue = parameterArray[step + threadIndex];
 
-            threadSemblanceData[sharedMemoryArrayStep + parameterThreadIndex] = parameterValue;
+            threadSemblanceData[sharedMemoryArrayStep + threadIndex] = parameterValue;
 
             travelTimeThreadData.semblanceParameters[parameterIndex] = parameterValue;
         }
@@ -97,10 +97,8 @@ void kernelLinearSearch(const float *samples,
                 sumNumerator += semblanceCompute.numeratorComponents[j] * semblanceCompute.numeratorComponents[j];
             }
 
-            threadSemblanceData[parameterThreadIndex] =
-                sumNumerator / (usedCount * semblanceCompute.denominatorSum);
-            threadSemblanceData[parameterArrayStep + parameterThreadIndex] =
-                semblanceCompute.linearSum / (usedCount * gatherData.windowSize);
+            threadSemblanceData[threadIndex] = sumNumerator / (usedCount * semblanceCompute.denominatorSum);
+            threadSemblanceData[parameterArrayStep + threadIndex] = semblanceCompute.linearSum / (usedCount * gatherData.windowSize);
         }
 
         notUsedCountArray[notUsedIndex] += notUsedCount;
@@ -109,19 +107,18 @@ void kernelLinearSearch(const float *samples,
 
         /* Reduce the best results */
         for (unsigned int s = blockDim.x / 2; s > 0; s = s >> 1) {
-            if (parameterThreadIndex < s) {
-                if (threadSemblanceData[parameterThreadIndex] < threadSemblanceData[parameterThreadIndex + s]) {
+            if (threadIndex < s) {
+                if (threadSemblanceData[threadIndex] < threadSemblanceData[threadIndex + s]) {
                     for (unsigned int i = 0; i < numberOfTotalParameters; i++) {
                         unsigned step = i * parameterArrayStep;
-                        threadSemblanceData[step + parameterThreadIndex] =
-                            threadSemblanceData[step + parameterThreadIndex + s];
+                        threadSemblanceData[step + threadIndex] = threadSemblanceData[step + threadIndex + s];
                     }
                 }
             }
             __syncthreads();
         }
 
-        if (parameterThreadIndex == 0) {
+        if (threadIndex == 0) {
             if (threadSemblanceData[0] > resultArray[sampleIndex]) {
                 for (unsigned int i = 0; i < numberOfTotalParameters; i++) {
                     unsigned int resultArrayStep = i * samplesPerTrace;
