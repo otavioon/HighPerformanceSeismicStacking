@@ -1,3 +1,4 @@
+#include "common/include/output/Logger.hpp"
 #include "common/include/parser/LinearSearchParser.hpp"
 
 using namespace boost::program_options;
@@ -7,7 +8,7 @@ unique_ptr<Parser> LinearSearchParser::instance = nullptr;
 
 LinearSearchParser::LinearSearchParser() : Parser() {
     arguments.add_options()
-        ("granularity", value<vector<int>>()->required(), "Discretization granularities.");
+        ("granularity", value<vector<int>>()->required()->multitoken(), "Discretization granularities.");
 }
 
 ComputeAlgorithm* LinearSearchParser::parseComputeAlgorithm(
@@ -21,6 +22,8 @@ ComputeAlgorithm* LinearSearchParser::parseComputeAlgorithm(
     if (argumentMap.count("granularity")) {
         discretizationGranularity = argumentMap["granularity"].as<vector<int>>();
     }
+
+    LOGI("Received " << discretizationGranularity.size() << " granularities.");
 
     ComputeAlgorithm* algorithm = builder->buildLinearSearchAlgorithm(traveltime, deviceContext, discretizationGranularity);
 
