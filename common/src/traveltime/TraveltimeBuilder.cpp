@@ -1,3 +1,4 @@
+#include "common/include/output/Logger.hpp"
 #include "common/include/traveltime/TraveltimeBuilder.hpp"
 #include "common/include/traveltime/CommonMidPoint.hpp"
 #include "common/include/traveltime/OffsetContinuationTrajectory.hpp"
@@ -61,6 +62,9 @@ Traveltime* TraveltimeBuilder::buildZeroOffsetCommonReflectionSurface(
     float minVelocity = traveltime->getLowerBoundForParameter(0);
     float upperBoundForA = 2.0f * sin(traveltime->getAinInRad()) / v0;
     float upperBoundForB = bPctg * 4 / (minVelocity  * minVelocity);
+
+    LOGI("Upper bound for A is " << upperBoundForA);
+    LOGI("Upper bound for B is " << upperBoundForB);
 
     traveltime->updateLowerBoundForParameter(1, -upperBoundForA);
     traveltime->updateUpperBoundForParameter(1, upperBoundForA);
