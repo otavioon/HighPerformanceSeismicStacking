@@ -28,7 +28,7 @@ void CudaLinearSearchAlgorithm::computeSemblanceAtGpuForMidpoint(float m0) {
 
     gpu_gather_data_t kernelData = gather->getGpuGatherData();
 
-    gpu_traveltime_data_t kerneltraveltime = traveltime->toGpuData();
+    gpu_traveltime_data_t kernelTraveltime = traveltime->toGpuData();
 
     gpu_reference_point_t kernelReferencePoint;
     kernelReferencePoint.m0 = m0;
@@ -48,7 +48,7 @@ void CudaLinearSearchAlgorithm::computeSemblanceAtGpuForMidpoint(float m0) {
         filteredTracesCount,
         kernelData,
         kernelReferencePoint,
-        kerneltraveltime,
+        kernelTraveltime,
         CUDA_DEV_PTR(deviceParameterArray),
         CUDA_DEV_PTR(deviceResultArray),
         CUDA_DEV_PTR(deviceNotUsedCountArray)
@@ -75,7 +75,7 @@ void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
 
     gpu_gather_data_t gatherData = gather->getGpuGatherData();
 
-    gpu_traveltime_data_t kerneltraveltime = traveltime->toGpuData();
+    gpu_traveltime_data_t kernelTraveltime = traveltime->toGpuData();
 
     gpu_reference_point_t kernelReferencePoint;
     kernelReferencePoint.m0 = m0;
@@ -104,7 +104,7 @@ void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
                 traceCount,
                 gatherData,
                 kernelReferencePoint,
-                kerneltraveltime,
+                kernelTraveltime,
                 CUDA_DEV_PTR(deviceParameterArray),
                 getParameterArrayStep()
             );
