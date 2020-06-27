@@ -19,6 +19,7 @@ class DifferentialEvolutionAlgorithm : public ComputeAlgorithm {
 
         void computeSemblanceAndParametersForMidpoint(float m0) override;
         unsigned int getParameterArrayStep() const override;
+        unsigned int getResultArrayStep() const;
         void setUp() override;
         const string toString() const override;
 

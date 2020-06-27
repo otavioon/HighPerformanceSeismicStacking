@@ -75,24 +75,30 @@ void DifferentialEvolutionAlgorithm::computeSemblanceAndParametersForMidpoint(fl
 }
 
 unsigned int DifferentialEvolutionAlgorithm::getParameterArrayStep() const {
-    Gather* gather = Gather::getInstance();
-    return individualsPerPopulation * gather->getSamplesPerTrace();
+    return individualsPerPopulation * traveltime->getNumberOfParameters();
 }
+
+unsigned int DifferentialEvolutionAlgorithm::getResultArrayStep() const {
+    return individualsPerPopulation * traveltime->getNumberOfCommonResults();
+};
 
 void DifferentialEvolutionAlgorithm::setUp() {
     Gather* gather = Gather::getInstance();
 
     unsigned int numberOfParameters = traveltime->getNumberOfParameters();
     unsigned int numberOfResults = traveltime->getNumberOfResults();
-    unsigned int numberOfCommonResults = traveltime->getNumberOfCommonResults();
     unsigned int numberOfSamples = gather->getSamplesPerTrace();
     unsigned int parameterArrayStep = getParameterArrayStep();
+    unsigned int resultArrayStep = getResultArrayStep();
+
+    unsigned int parameterArraySize = gather->getSamplesPerTrace() * parameterArrayStep;
+    unsigned int commonResultArraySize = gather->getSamplesPerTrace() * resultArrayStep;
 
     copyGatherDataToDevice();
 
     vector<float> lowerBounds(numberOfParameters), upperBounds(numberOfParameters);
 
-    for (unsigned int i = 0; i < traveltime->getNumberOfParameters(); i++) {
+    for (unsigned int i = 0; i < numberOfParameters; i++) {
         lowerBounds[i] = traveltime->getLowerBoundForParameter(i);
         upperBounds[i] = traveltime->getUpperBoundForParameter(i);
     }
@@ -103,14 +109,14 @@ void DifferentialEvolutionAlgorithm::setUp() {
     min->copyFrom(lowerBounds);
     max->copyFrom(upperBounds);
 
-    deviceNotUsedCountArray.reset(dataFactory->build(parameterArrayStep, deviceContext));
+    deviceNotUsedCountArray.reset(dataFactory->build(gather->getSamplesPerTrace() * individualsPerPopulation, deviceContext));
 
-    x.reset(dataFactory->build(numberOfParameters * parameterArrayStep, deviceContext));
-    u.reset(dataFactory->build(numberOfParameters * parameterArrayStep, deviceContext));
-    v.reset(dataFactory->build(numberOfParameters * parameterArrayStep, deviceContext));
+    x.reset(dataFactory->build(parameterArraySize, deviceContext));
+    u.reset(dataFactory->build(parameterArraySize, deviceContext));
+    v.reset(dataFactory->build(parameterArraySize, deviceContext));
 
-    fx.reset(dataFactory->build(numberOfCommonResults * parameterArrayStep, deviceContext));
-    fu.reset(dataFactory->build(numberOfCommonResults * parameterArrayStep, deviceContext));
+    fx.reset(dataFactory->build(commonResultArraySize, deviceContext));
+    fu.reset(dataFactory->build(commonResultArraySize, deviceContext));
 
     computedResults.resize(numberOfResults * numberOfSamples);
 
