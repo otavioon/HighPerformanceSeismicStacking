@@ -35,21 +35,16 @@ int SpitzCommitter::commit_task(spitz::istream& result) {
 
     float m0 = result.read_float();
 
+    LOGI("Committing result for m0 = "<< m0);
+
     result.read_data(tempResultArray.data(), tempResultArray.size() * sizeof(float));
 
     resultSet->setAllResultsForMidpoint(m0, tempResultArray);
 
-    resultSet->setStatisticalResultForMidpoint(
-        m0,
-        StatisticResult::EFFICIENCY,
-        result.read_float()
-    );
-
-    resultSet->setStatisticalResultForMidpoint(
-        m0,
-        StatisticResult::INTR_PER_SEC,
-        result.read_float()
-    );
+    for (unsigned int i = 0; i < static_cast<unsigned int>(StatisticResult::CNT); i++) {
+        StatisticResult statResult = static_cast<StatisticResult>(i);
+        resultSet->setStatisticalResultForMidpoint(m0, statResult, result.read_float());
+    }
 
     taskIndex++;
 
@@ -64,6 +59,8 @@ int SpitzCommitter::commit_job(const spitz::pusher& final_result) {
 
     Dumper dumper(folderPath, filePath);
 
+    dumper.createDir();
+
     dumper.dumpGatherParameters(filePath);
 
     for (unsigned int i = 0; i < traveltime->getNumberOfResults(); i++) {
@@ -73,15 +70,10 @@ int SpitzCommitter::commit_job(const spitz::pusher& final_result) {
         );
     }
 
-    dumper.dumpStatisticalResult(
-        STATISTIC_NAME_MAP[StatisticResult::EFFICIENCY],
-        resultSet->get(StatisticResult::EFFICIENCY)
-    );
-
-    dumper.dumpStatisticalResult(
-        STATISTIC_NAME_MAP[StatisticResult::INTR_PER_SEC],
-        resultSet->get(StatisticResult::INTR_PER_SEC)
-    );
+    for (unsigned int i = 0; i < static_cast<unsigned int>(StatisticResult::CNT); i++) {
+        StatisticResult statResult = static_cast<StatisticResult>(i);
+        dumper.dumpStatisticalResult(STATISTIC_NAME_MAP[statResult], resultSet->get(statResult));
+    }
 
     // A result must be pushed even if the final result is not passed on
     final_result.push(NULL, 0);

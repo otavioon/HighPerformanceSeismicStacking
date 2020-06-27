@@ -1,4 +1,5 @@
 #include "common/include/execution/SpitzFactory.hpp"
+#include "common/include/output/Logger.hpp"
 
 #include <memory>
 #include <spitz/spitz.hpp>
@@ -16,9 +17,12 @@ void SpitzFactory::initialize(int argc, const char *argv[]) {
     parser->parseArguments(argc, argv);
     parser->readGather();
 
-    if (traveltime != nullptr) {
+    if (traveltime == nullptr) {
+        LOGH("Initializing traveltime");
         traveltime.reset(parser->parseTraveltime());
     }
+
+    LOGI("Factory initialized");
 }
 
 spitz::job_manager *SpitzFactory::create_job_manager(
@@ -37,7 +41,7 @@ spitz::committer *SpitzFactory::create_committer(
 ) {
     initialize(argc, argv);
 
-    return new SpitzCommitter(traveltime, parser->getInputFilePath(), parser->getFilename());
+    return new SpitzCommitter(traveltime, parser->getOutputDirectory(), parser->getFilename());
 }
 
 spitz::worker *SpitzFactory::create_worker(
@@ -51,6 +55,8 @@ spitz::worker *SpitzFactory::create_worker(
     shared_ptr<DeviceContext> deviceContext(deviceBuilder->build(deviceCount++));
 
     ComputeAlgorithm* computeAlgorithm = parser->parseComputeAlgorithm(builder, deviceContext, traveltime);
+
+    computeAlgorithm->setUp();
 
     return new SpitzWorker(computeAlgorithm);
 }
