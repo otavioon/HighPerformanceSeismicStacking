@@ -76,7 +76,7 @@ void kernelAdvanceGeneration(
     const float* u,
     const float* fu,
     unsigned int numberOfParameters,
-    unsigned int numberOfResults
+    unsigned int numberOfCommonResults
 );
 
 __global__

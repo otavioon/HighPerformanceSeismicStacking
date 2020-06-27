@@ -21,6 +21,10 @@ CudaDifferentialEvolutionAlgorithm::CudaDifferentialEvolutionAlgorithm(
 ) : DifferentialEvolutionAlgorithm(model, context, dataBuilder, gen, ind) {
 }
 
+CudaDifferentialEvolutionAlgorithm::~CudaDifferentialEvolutionAlgorithm() {
+    CUDA_ASSERT(cudaFree(st));
+}
+
 void CudaDifferentialEvolutionAlgorithm::computeSemblanceAtGpuForMidpoint(float m0) {
     Gather* gather = Gather::getInstance();
 
@@ -116,7 +120,11 @@ void CudaDifferentialEvolutionAlgorithm::setupRandomSeedArray() {
 
     Gather* gather = Gather::getInstance();
 
-    dim3 dimGrid(gather->getSamplesPerTrace());
+    unsigned int samplesPerTrace = gather->getSamplesPerTrace();
+
+    dim3 dimGrid(samplesPerTrace);
+
+    CUDA_ASSERT(cudaMalloc(&st, samplesPerTrace * individualsPerPopulation * sizeof(curandState)));
 
     srand(static_cast<unsigned int>(time(NULL)));
 
@@ -197,7 +205,7 @@ void CudaDifferentialEvolutionAlgorithm::advanceGeneration() {
     dim3 dimGrid(gather->getSamplesPerTrace());
 
     unsigned int numberOfParameters = traveltime->getNumberOfParameters();
-    unsigned int numberOfResults = traveltime->getNumberOfResults();
+    unsigned int numberOfCommonResults = traveltime->getNumberOfCommonResults();
 
     kernelAdvanceGeneration<<< dimGrid, individualsPerPopulation >>>(
         CUDA_DEV_PTR(x),
@@ -205,7 +213,7 @@ void CudaDifferentialEvolutionAlgorithm::advanceGeneration() {
         CUDA_DEV_PTR(u),
         CUDA_DEV_PTR(fu),
         numberOfParameters,
-        numberOfResults
+        numberOfCommonResults
     );
 
     CUDA_ASSERT(cudaGetLastError());
@@ -221,7 +229,7 @@ void CudaDifferentialEvolutionAlgorithm::selectBestIndividuals(vector<float>& re
     unsigned int numberOfResults = traveltime->getNumberOfResults();
     unsigned int sharedMemCount = numberOfResults * individualsPerPopulation * static_cast<unsigned int>(sizeof(float));
 
-    deviceResultArray.reset(dataFactory->build(numberOfResults * individualsPerPopulation, deviceContext));
+    deviceResultArray.reset(dataFactory->build(numberOfResults * gather->getSamplesPerTrace(), deviceContext));
 
     kernelSelectBestIndividuals<<< dimGrid, individualsPerPopulation, sharedMemCount >>>(
         CUDA_DEV_PTR(x),

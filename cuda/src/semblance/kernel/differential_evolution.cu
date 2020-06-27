@@ -14,15 +14,14 @@ void kernelDifferentialEvolution(
     float *resultArray,
     float* notUsedCountArray
 ) {
-
     unsigned int parameterIndex = threadIdx.x;
     unsigned int sampleIndex = blockIdx.x;
     unsigned int notUsedIndex = blockIdx.x * blockDim.x + threadIdx.x;
     unsigned int individualPerPopulation = blockDim.x;
 
-    unsigned int arrayStep = individualPerPopulation * gatherData.samplesPerTrace;
-
     if (sampleIndex < gatherData.samplesPerTrace) {
+
+        unsigned int arrayStep = individualPerPopulation * traveltime.numberOfParameters;
 
         gpu_semblance_compute_data_t semblanceCompute;
         gpu_traveltime_parameter_t travelTimeThreadData;
@@ -35,9 +34,7 @@ void kernelDifferentialEvolution(
         travelTimeThreadData.numberOfParameters = traveltime.numberOfParameters;
 
         for (unsigned int i = 0; i < traveltime.numberOfParameters; i++) {
-
             unsigned int step = sampleIndex * arrayStep + i * individualPerPopulation;
-
             travelTimeThreadData.semblanceParameters[i] = parameterArray[step + parameterIndex];
         }
 
@@ -74,16 +71,19 @@ void kernelDifferentialEvolution(
 
         if (usedCount) {
 
+            unsigned int resultArrayStep = individualPerPopulation * traveltime.numberOfCommonResults;
+            unsigned int step = sampleIndex * resultArrayStep;
+
             float sumNumerator = 0;
             for (int j = 0; j < gatherData.windowSize; j++) {
                 sumNumerator +=
                     semblanceCompute.numeratorComponents[j] * semblanceCompute.numeratorComponents[j];
             }
 
-            resultArray[sampleIndex * arrayStep + parameterIndex] =
+            resultArray[step + parameterIndex] =
                     sumNumerator / (usedCount * semblanceCompute.denominatorSum);
 
-            resultArray[sampleIndex * arrayStep + individualPerPopulation + parameterIndex] =
+            resultArray[step + individualPerPopulation + parameterIndex] =
                 semblanceCompute.linearSum / (usedCount * gatherData.windowSize);
         }
 
@@ -245,11 +245,11 @@ void kernelAdvanceGeneration(
     const float* u,
     const float* fu,
     unsigned int numberOfParameters,
-    unsigned int numberOfResults
+    unsigned int numberOfCommonResults
 ) {
     unsigned int individualsPerPopulation = blockDim.x;
     unsigned int parameterArrayStep = numberOfParameters * individualsPerPopulation;
-    unsigned int resultArrayStep = numberOfResults * individualsPerPopulation;
+    unsigned int resultArrayStep = numberOfCommonResults * individualsPerPopulation;
 
     unsigned int t0 = blockIdx.x;
     unsigned int individualIndex = threadIdx.x;
@@ -266,7 +266,7 @@ void kernelAdvanceGeneration(
             x[individualArrayIndex] = u[individualArrayIndex];
         }
 
-        for (unsigned int resultIndex = 0; resultIndex < numberOfResults; resultIndex++) {
+        for (unsigned int resultIndex = 0; resultIndex < numberOfCommonResults; resultIndex++) {
 
             unsigned int individualArrayIndex =
                 t0 * resultArrayStep + resultIndex * individualsPerPopulation + individualIndex;
@@ -356,18 +356,15 @@ void kernelSelectBestIndividuals(
     }
 
     if (individualIndex == 0) {
-
         for (unsigned int parameterIndex = 0;
             parameterIndex < numberOfTotalParameters;
             parameterIndex++
         ) {
-            unsigned int sharedMemIndex =
-                parameterIndex * individualsPerPopulation;
+            unsigned int sharedMemIndex = parameterIndex * individualsPerPopulation;
 
-            unsigned int resultArrayIndex =
-                t0 * numberOfTotalParameters * numberOfSamples;
+            unsigned int resultArrayIndex = parameterIndex * numberOfSamples;
 
-            resultArray[resultArrayIndex] = sharedMemArray[sharedMemIndex];
+            resultArray[resultArrayIndex + t0] = sharedMemArray[sharedMemIndex];
         }
     }
 }
