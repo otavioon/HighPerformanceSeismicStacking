@@ -36,7 +36,8 @@ Parser::~Parser() {
 
 void Parser::parseArguments(int argc, const char *argv[]) {
     try {
-        store(parse_command_line(argc, argv, arguments), argumentMap);
+        int denyShortStyle = command_line_style::unix_style ^ command_line_style::allow_short;
+        store(parse_command_line(argc, argv, arguments, denyShortStyle), argumentMap);
         notify(argumentMap);
         Logger::getInstance()->setVerbosity(getLogVerbosity());
     } catch (const exception& ex) {
