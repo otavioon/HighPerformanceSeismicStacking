@@ -29,7 +29,7 @@ void CudaDataContainer::allocate() {
 }
 
 void CudaDataContainer::copyFrom(const vector<float>& sourceArray) {
-    if (elementCount < sourceArray.size()) {
+    if (elementCount != sourceArray.size()) {
         throw invalid_argument("Allocated memory in GPU is different from source array size.");
     }
 
@@ -51,7 +51,7 @@ void CudaDataContainer::deallocate() {
 }
 
 void CudaDataContainer::pasteTo(vector<float>& targetArray) {
-    if (elementCount > targetArray.size()) {
+    if (elementCount != targetArray.size()) {
         throw invalid_argument("Allocated memory in GPU is different from target array size.");
     }
 

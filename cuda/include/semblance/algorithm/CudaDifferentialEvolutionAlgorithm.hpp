@@ -17,6 +17,8 @@ class CudaDifferentialEvolutionAlgorithm : public DifferentialEvolutionAlgorithm
             unsigned int ind
         );
 
+        ~CudaDifferentialEvolutionAlgorithm();
+
         void computeSemblanceAtGpuForMidpoint(float m0) override;
 
         void selectTracesToBeUsedForMidpoint(float m0) override;
