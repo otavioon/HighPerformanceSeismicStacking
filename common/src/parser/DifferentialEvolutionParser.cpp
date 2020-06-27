@@ -1,3 +1,4 @@
+#include "common/include/output/Logger.hpp"
 #include "common/include/parser/DifferentialEvolutionParser.hpp"
 
 using namespace boost::program_options;
@@ -7,8 +8,8 @@ unique_ptr<Parser> DifferentialEvolutionParser::instance = nullptr;
 
 DifferentialEvolutionParser::DifferentialEvolutionParser() : Parser() {
     arguments.add_options()
-        ("generations", value<int>()->required(), "Number of generations to be used in differential evolution.")
-        ("population-size", value<int>()->required(), "Differential evolution population size.");
+        ("generations", value<unsigned int>()->required(), "Number of generations to be used in differential evolution.")
+        ("population-size", value<unsigned int>()->required(), "Differential evolution population size.");
 }
 
 ComputeAlgorithm* DifferentialEvolutionParser::parseComputeAlgorithm(
@@ -23,7 +24,12 @@ ComputeAlgorithm* DifferentialEvolutionParser::parseComputeAlgorithm(
     }
 
     generations = argumentMap["generations"].as<unsigned int>();
+
+    LOGH("Generations = " << generations);
+
     individualsPerPopulation = argumentMap["population-size"].as<unsigned int>();
+
+    LOGH("Individuals per population = " << individualsPerPopulation);
 
     ComputeAlgorithm* algorithm = builder->buildDifferentialEvolutionAlgorithm(traveltime, deviceContext, generations, individualsPerPopulation);
 
