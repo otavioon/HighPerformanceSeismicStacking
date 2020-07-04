@@ -27,6 +27,8 @@ void StretchFreeAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
 
     vector<float> tempParameterArray(parameterArrayStep);
 
+    deviceContext->activate();
+
     deviceResultArray->reset();
     deviceNotUsedCountArray->reset();
 

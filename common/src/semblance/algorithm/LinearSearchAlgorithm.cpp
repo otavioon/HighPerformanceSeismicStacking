@@ -32,6 +32,8 @@ void LinearSearchAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
 
     vector<float> tempParameterArray(numberOfParameters * parameterArrayStep);
 
+    deviceContext->activate();
+
     deviceResultArray->reset();
     deviceNotUsedCountArray->reset();
 

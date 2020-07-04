@@ -54,6 +54,8 @@ spitz::worker *SpitzFactory::create_worker(
 
     shared_ptr<DeviceContext> deviceContext(deviceBuilder->build(deviceCount++));
 
+    deviceContext->activate();
+
     ComputeAlgorithm* computeAlgorithm = parser->parseComputeAlgorithm(builder, deviceContext, traveltime);
 
     computeAlgorithm->setUp();

@@ -24,6 +24,8 @@ void DifferentialEvolutionAlgorithm::computeSemblanceAndParametersForMidpoint(fl
     chrono::duration<double> selectionExecutionTime = chrono::duration<double>::zero();
     chrono::duration<double> totalExecutionTime = chrono::duration<double>::zero();
 
+    deviceContext->activate();
+
     deviceNotUsedCountArray->reset();
     fx->reset();
     fu->reset();
