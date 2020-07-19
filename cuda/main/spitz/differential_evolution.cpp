@@ -1,4 +1,4 @@
-#define SPITZ_ENTRY_POINT
+#define SPITS_ENTRY_POINT
 
 #include "common/include/execution/SpitzFactory.hpp"
 #include "common/include/parser/DifferentialEvolutionParser.hpp"
