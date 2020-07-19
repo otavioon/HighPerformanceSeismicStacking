@@ -5,8 +5,8 @@ using namespace std;
 SpitzWorker::SpitzWorker(ComputeAlgorithm* computeAlgorithm) : computeAlgorithm(computeAlgorithm) {
 }
 
-int SpitzWorker::run(spitz::istream& task, const spitz::pusher& result) {
-    spitz::ostream outputStream;
+int SpitzWorker::run(spits::istream& task, const spits::pusher& result) {
+    spits::ostream outputStream;
 
     float m0 = task.read_float();
 

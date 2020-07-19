@@ -2,7 +2,7 @@
 #include "common/include/output/Logger.hpp"
 
 #include <memory>
-#include <spitz/spitz.hpp>
+#include <spits.hpp>
 
 using namespace std;
 
@@ -25,28 +25,31 @@ void SpitzFactory::initialize(int argc, const char *argv[]) {
     LOGI("Factory initialized");
 }
 
-spitz::job_manager *SpitzFactory::create_job_manager(
+spits::job_manager *SpitzFactory::create_job_manager(
     int argc,
     const char *argv[],
-    spitz::istream& jobinfo
+    spits::istream& jobinfo,
+    spits::metrics& metrics
 ) {
     initialize(argc, argv);
     return new SpitzJobManager();
 }
 
-spitz::committer *SpitzFactory::create_committer(
+spits::committer *SpitzFactory::create_committer(
     int argc,
     const char *argv[],
-    spitz::istream& jobinfo
+    spits::istream& jobinfo,
+    spits::metrics& metrics
 ) {
     initialize(argc, argv);
 
     return new SpitzCommitter(traveltime, parser->getOutputDirectory(), parser->getFilename());
 }
 
-spitz::worker *SpitzFactory::create_worker(
+spits::worker *SpitzFactory::create_worker(
     int argc,
-    const char *argv[]
+    const char *argv[],
+    spits::metrics& metrics
 ) {
     unique_lock<mutex> mlock(deviceMutex);
 

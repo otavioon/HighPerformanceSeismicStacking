@@ -6,11 +6,11 @@
 #include "cuda/include/semblance/data/CudaDeviceContextBuilder.hpp"
 
 #include <memory>
-#include <spitz/spitz.hpp>
+#include <spits.hpp>
 
 using namespace std;
 
-spitz::factory *spitz_factory = new SpitzFactory(
+spits::factory *spitz_factory = new SpitzFactory(
     DifferentialEvolutionParser::getInstance(),
     CudaComputeAlgorithmBuilder::getInstance(),
     CudaDeviceContextBuilder::getInstance()

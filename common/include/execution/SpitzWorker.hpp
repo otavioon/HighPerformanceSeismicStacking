@@ -5,15 +5,15 @@
 #include "common/include/traveltime/Traveltime.hpp"
 
 #include <memory>
-#include <spitz/spitz.hpp>
+#include <spits.hpp>
 
 using namespace std;
 
-class SpitzWorker : public spitz::worker {
+class SpitzWorker : public spits::worker {
     protected:
         unique_ptr<ComputeAlgorithm> computeAlgorithm;
 
     public:
         SpitzWorker(ComputeAlgorithm* computeAlgorithm);
-        int run(spitz::istream& task, const spitz::pusher& result);
+        int run(spits::istream& task, const spits::pusher& result);
 };

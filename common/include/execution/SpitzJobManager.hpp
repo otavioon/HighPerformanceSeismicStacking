@@ -6,11 +6,11 @@
 #include <map>
 #include <memory>
 #include <mutex>
-#include <spitz/spitz.hpp>
+#include <spits.hpp>
 
 using namespace std;
 
-class SpitzJobManager : public spitz::job_manager {
+class SpitzJobManager : public spits::job_manager {
     private:
         map<float, Cdp>::const_iterator cdpIterator;
         mutex iteratorMutex;
@@ -18,5 +18,5 @@ class SpitzJobManager : public spitz::job_manager {
     public:
         SpitzJobManager();
 
-        bool next_task(const spitz::pusher& task) override;
+        bool next_task(const spits::pusher& task) override;
 };

@@ -29,7 +29,7 @@ SpitzCommitter::SpitzCommitter(
     LOGI("[CO] Committer created.");
 }
 
-int SpitzCommitter::commit_task(spitz::istream& result) {
+int SpitzCommitter::commit_task(spits::istream& result) {
 
     unique_lock<mutex> mlock(taskMutex);
 
@@ -53,7 +53,7 @@ int SpitzCommitter::commit_task(spitz::istream& result) {
     return 0;
 }
 
-int SpitzCommitter::commit_job(const spitz::pusher& final_result) {
+int SpitzCommitter::commit_job(const spits::pusher& final_result) {
 
     //std::chrono::duration<double> diff = std::chrono::steady_clock::now() - strt_tm;
 

@@ -4,7 +4,7 @@ SHELL = /bin/bash
 # Compiler flags
 #
 
-ENABLE_DEBUG := yes
+ENABLE_DEBUG := no
 ifeq ($(ENABLE_DEBUG), yes)
 	CFLAGS += -g -O0
 	NVCCFLAGS += -G -g -O0
@@ -14,8 +14,8 @@ else
 endif
 
 LDFLAGS += -lboost_program_options -lboost_system -lboost_filesystem -lm -lcuda
-CFLAGS += -Wall -fPIC -std=c++14 -Wno-sign-conversion
-NVCCFLAGS += --use_fast_math -arch=sm_30 -Xcompiler -Wall -Xcompiler -fPIC -lcurand
+CFLAGS += -Wall -fPIC -std=c++17 -Wno-sign-conversion
+NVCCFLAGS += --use_fast_math -Xcompiler -Wall -Xcompiler -fPIC -lcurand
 
 #
 # Folder paths
@@ -34,7 +34,7 @@ CUDA_OBJECT = $(CUDA_SOURCE:.cu=.o)
 
 CUDA_LIBRARY_PATH = /usr/local/cuda/include/
 
-SPITS_LIBRARY_PATH = $(PROJECT_ROOT_PATH)/spitz/spitz-include/ccpp/
+SPITS_LIBRARY_PATH = $(PROJECT_ROOT_PATH)/spits/API/include/
 
 %.o: %.cu
 	nvcc -o $@ -c $< -dc -I$(PROJECT_ROOT_PATH) -I$(CUDA_LIBRARY_PATH) -I$(SPITS_LIBRARY_PATH) $(NVCCFLAGS)

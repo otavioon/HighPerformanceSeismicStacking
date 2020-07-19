@@ -7,11 +7,11 @@
 #include "common/include/semblance/data/DeviceContextBuilder.hpp"
 
 #include <memory>
-#include <spitz/spitz.hpp>
+#include <spits.hpp>
 
 using namespace std;
 
-class SpitzFactory : public spitz::factory {
+class SpitzFactory : public spits::factory {
     protected:
         Parser* parser;
 
@@ -28,21 +28,24 @@ class SpitzFactory : public spitz::factory {
     public:
         SpitzFactory(Parser* p, ComputeAlgorithmBuilder* builder, DeviceContextBuilder* deviceBuilder);
 
-        spitz::job_manager *create_job_manager(
+        spits::job_manager *create_job_manager(
             int argc,
             const char *argv[],
-            spitz::istream& jobinfo
+            spits::istream& jobinfo,
+            spits::metrics& metrics
         ) override;
 
-        spitz::committer *create_committer(
+        spits::committer *create_committer(
             int argc,
             const char *argv[],
-            spitz::istream& jobinfo
+            spits::istream& jobinfo,
+            spits::metrics& metrics
         ) override;
 
-        spitz::worker *create_worker(
+        spits::worker *create_worker(
             int argc,
-            const char *argv[]
+            const char *argv[],
+            spits::metrics& metrics
         ) override;
 
         void initialize(int argc, const char *argv[]);

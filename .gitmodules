@@ -1,0 +1,3 @@
+[submodule "spits"]
+	path = spits
+	url = https://github.com/lmcad-unicamp/spits-2.0.git

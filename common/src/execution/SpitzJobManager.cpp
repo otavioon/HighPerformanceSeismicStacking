@@ -9,14 +9,14 @@ SpitzJobManager::SpitzJobManager() : cdpIterator(Gather::getInstance()->getCdps(
     cout << "[JM] Job manager created." << endl;
 }
 
-bool SpitzJobManager::next_task(const spitz::pusher& task) {
+bool SpitzJobManager::next_task(const spits::pusher& task) {
     unique_lock<mutex> mlock(iteratorMutex);
 
     Gather* gather = Gather::getInstance();
 
     if (cdpIterator != gather->getCdps().end()) {
 
-        spitz::ostream taskStream;
+        spits::ostream taskStream;
 
         taskStream << cdpIterator->first;
 

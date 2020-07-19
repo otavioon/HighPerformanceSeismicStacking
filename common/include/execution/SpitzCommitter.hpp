@@ -6,13 +6,13 @@
 #include <map>
 #include <memory>
 #include <mutex>
-#include <spitz/spitz.hpp>
+#include <spits.hpp>
 #include <string>
 #include <vector>
 
 using namespace std;
 
-class SpitzCommitter : public spitz::committer {
+class SpitzCommitter : public spits::committer {
     private:
         mutex taskMutex;
 
@@ -33,6 +33,6 @@ class SpitzCommitter : public spitz::committer {
             const string& file
         );
 
-        int commit_task(spitz::istream& result);
-        int commit_job(const spitz::pusher& final_result);
+        int commit_task(spits::istream& result);
+        int commit_job(const spits::pusher& final_result);
 };
