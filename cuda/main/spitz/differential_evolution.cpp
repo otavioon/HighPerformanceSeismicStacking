@@ -10,7 +10,7 @@
 
 using namespace std;
 
-spits::factory *spitz_factory = new SpitzFactory(
+spits::factory *spits_factory = new SpitzFactory(
     DifferentialEvolutionParser::getInstance(),
     CudaComputeAlgorithmBuilder::getInstance(),
     CudaDeviceContextBuilder::getInstance()
