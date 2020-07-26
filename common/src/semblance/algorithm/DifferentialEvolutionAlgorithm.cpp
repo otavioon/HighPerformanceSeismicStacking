@@ -1,4 +1,5 @@
 #include "common/include/execution/Utils.hpp"
+#include "common/include/output/Logger.hpp"
 #include "common/include/semblance/algorithm/DifferentialEvolutionAlgorithm.hpp"
 
 #include <sstream>
@@ -87,6 +88,8 @@ unsigned int DifferentialEvolutionAlgorithm::getResultArrayStep() const {
 void DifferentialEvolutionAlgorithm::setUp() {
     Gather* gather = Gather::getInstance();
 
+    deviceContext->activate();
+
     unsigned int numberOfParameters = traveltime->getNumberOfParameters();
     unsigned int numberOfResults = traveltime->getNumberOfResults();
     unsigned int numberOfSamples = gather->getSamplesPerTrace();
@@ -123,6 +126,8 @@ void DifferentialEvolutionAlgorithm::setUp() {
     computedResults.resize(numberOfResults * numberOfSamples);
 
     setupRandomSeedArray();
+
+    isSet = true;
 }
 
 const string DifferentialEvolutionAlgorithm::toString() const {

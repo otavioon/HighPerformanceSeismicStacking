@@ -7,6 +7,7 @@
 #include "common/include/semblance/data/DeviceContextBuilder.hpp"
 
 #include <memory>
+#include <mutex>
 #include <spits.hpp>
 
 using namespace std;
@@ -20,6 +21,8 @@ class SpitzFactory : public spits::factory {
         ComputeAlgorithmBuilder* builder;
 
         DeviceContextBuilder* deviceBuilder;
+
+        shared_ptr<mutex> taskMutex;
 
         shared_ptr<Traveltime> traveltime;
 

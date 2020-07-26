@@ -1,4 +1,5 @@
 #include "common/include/execution/SpitzFactory.hpp"
+#include "common/include/model/Gather.hpp"
 #include "common/include/output/Logger.hpp"
 
 #include <memory>
@@ -11,6 +12,7 @@ SpitzFactory::SpitzFactory(
     ComputeAlgorithmBuilder* builder,
     DeviceContextBuilder* deviceBuilder
 ) : parser(p), builder(builder), deviceBuilder(deviceBuilder) {
+    taskMutex = make_shared<mutex>();
 }
 
 void SpitzFactory::initialize(int argc, const char *argv[]) {
@@ -18,7 +20,7 @@ void SpitzFactory::initialize(int argc, const char *argv[]) {
     parser->readGather();
 
     if (traveltime == nullptr) {
-        LOGH("Initializing traveltime");
+        LOGI("Initializing traveltime");
         traveltime.reset(parser->parseTraveltime());
     }
 
@@ -55,13 +57,11 @@ spits::worker *SpitzFactory::create_worker(
 
     initialize(argc, argv);
 
-    shared_ptr<DeviceContext> deviceContext(deviceBuilder->build(deviceCount++));
+    LOGI("Device count is " << deviceCount);
 
-    deviceContext->activate();
+    shared_ptr<DeviceContext> deviceContext(deviceBuilder->build(deviceCount++));
 
     ComputeAlgorithm* computeAlgorithm = parser->parseComputeAlgorithm(builder, deviceContext, traveltime);
 
-    computeAlgorithm->setUp();
-
-    return new SpitzWorker(computeAlgorithm);
+    return new SpitzWorker(computeAlgorithm, taskMutex);
 }

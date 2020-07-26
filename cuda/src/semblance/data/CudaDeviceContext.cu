@@ -1,3 +1,4 @@
+#include "common/include/output/Logger.hpp"
 #include "cuda/include/execution/CudaUtils.hpp"
 #include "cuda/include/semblance/data/CudaDeviceContext.hpp"
 
@@ -11,5 +12,6 @@ CudaDeviceContext::CudaDeviceContext(unsigned int devId) : DeviceContext(devId) 
 }
 
 void CudaDeviceContext::activate() const {
+    LOGI("Activating GPU#" << deviceId);
     CUDA_ASSERT(cudaSetDevice(deviceId));
 }

@@ -11,6 +11,7 @@ ComputeAlgorithm::ComputeAlgorithm(
     shared_ptr<DeviceContext> context,
     DataContainerBuilder* dataBuilder
 ) : algorithmName(name),
+    isSet(false),
     deviceContext(context),
     traveltime(model),
     dataFactory(dataBuilder),
@@ -20,6 +21,10 @@ ComputeAlgorithm::ComputeAlgorithm(
 }
 
 ComputeAlgorithm::~ComputeAlgorithm() {
+}
+
+bool ComputeAlgorithm::isSetUp() const {
+    return isSet;
 }
 
 void ComputeAlgorithm::copyGatherDataToDevice() {

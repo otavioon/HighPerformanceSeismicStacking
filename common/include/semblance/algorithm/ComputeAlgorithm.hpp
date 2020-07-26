@@ -24,6 +24,8 @@ enum class GatherData {
 
 class ComputeAlgorithm {
     protected:
+        bool isSet;
+
         DataContainerBuilder* dataFactory;
 
         string algorithmName, deviceSource;
@@ -65,6 +67,8 @@ class ComputeAlgorithm {
         );
 
         virtual ~ComputeAlgorithm();
+
+        bool isSetUp() const;
 
         void copyGatherDataToDevice();
 

@@ -136,11 +136,16 @@ void LinearSearchAlgorithm::setDiscretizationGranularityForParameter(
 }
 
 void LinearSearchAlgorithm::setUp() {
+
+    deviceContext->activate();
+
     setupArrays();
 
     copyGatherDataToDevice();
 
     setupDiscretizationSteps();
+
+    isSet = true;
 }
 
 unsigned int LinearSearchAlgorithm::getParameterArrayStep() const {
