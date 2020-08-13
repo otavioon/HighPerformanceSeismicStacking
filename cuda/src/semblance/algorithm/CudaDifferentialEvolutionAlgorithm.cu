@@ -120,6 +120,8 @@ void CudaDifferentialEvolutionAlgorithm::setupRandomSeedArray() {
 
     Gather* gather = Gather::getInstance();
 
+    deviceContext->activate();
+
     unsigned int samplesPerTrace = gather->getSamplesPerTrace();
 
     dim3 dimGrid(samplesPerTrace);

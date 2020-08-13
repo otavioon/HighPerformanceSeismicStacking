@@ -42,7 +42,6 @@ mutex& SingleHostRunner::getQueueMutex() {
 ComputeAlgorithm* SingleHostRunner::getComputeAlgorithm() {
     lock_guard<mutex> autoLock(deviceMutex);
     shared_ptr<DeviceContext> devContext(deviceContextBuilder->build(deviceIndex++));
-    devContext->activate();
     return parser->parseComputeAlgorithm(algorithmBuilder, devContext, traveltime);
 }
 
