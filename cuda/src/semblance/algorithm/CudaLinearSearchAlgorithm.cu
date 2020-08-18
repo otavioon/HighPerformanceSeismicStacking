@@ -1,3 +1,4 @@
+#include "common/include/execution/Utils.hpp"
 #include "common/include/output/Logger.hpp"
 #include "cuda/include/execution/CudaUtils.hpp"
 #include "cuda/include/semblance/algorithm/CudaLinearSearchAlgorithm.hpp"
@@ -5,6 +6,7 @@
 #include "cuda/include/semblance/kernel/base.h"
 #include "cuda/include/semblance/kernel/linear_search.h"
 
+#include <cmath>
 #include <numeric>
 #include <sstream>
 #include <stdexcept>
@@ -69,7 +71,7 @@ void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
     unsigned char* deviceUsedTraceMaskArray;
     CUDA_ASSERT(cudaMalloc((void **) &deviceUsedTraceMaskArray, traceCount * sizeof(unsigned char)));
 
-    dim3 dimGrid(traceCount / threadCount + 1);
+    dim3 dimGrid(static_cast<int>(ceil(traceCount / threadCount)));
 
     LOGI("Using " << dimGrid.x << " blocks for traces filtering (threadCount = "<< threadCount << ")");
 
@@ -81,23 +83,26 @@ void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
     kernelReferencePoint.m0 = m0;
     kernelReferencePoint.h0 = traveltime->getReferenceHalfoffset();
 
+    chrono::duration<double> kernelExecutionTime = chrono::duration<double>::zero();
+    chrono::duration<double> copyTime = chrono::duration<double>::zero();
+
     switch (traveltime->getModel()) {
         case CMP:
         case ZOCRS:
             LOGD("Executing filterMidpointDependentTraces<<<>>> kernel");
-            filterMidpointDependentTraces<<<dimGrid, threadCount>>>(
+            MEASURE_EXEC_TIME(kernelExecutionTime, filterMidpointDependentTraces<<<dimGrid, threadCount>>>(
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::MDPNT]),
                 traceCount,
                 deviceUsedTraceMaskArray,
                 traveltime->toGpuData(),
                 gather->getApm(),
                 m0
-            );
+            ));
             break;
 
         case OCT:
             LOGD("Executing filterOutTracesForOffsetContinuationTrajectoryAndLinearSearch<<<>>> kernel");
-            filterOutTracesForOffsetContinuationTrajectoryAndLinearSearch<<<dimGrid, threadCount>>>(
+            MEASURE_EXEC_TIME(kernelExecutionTime, filterOutTracesForOffsetContinuationTrajectoryAndDifferentialEvolution<<<dimGrid, threadCount>>>(
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::MDPNT]),
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::HLFOFFST]),
                 deviceUsedTraceMaskArray,
@@ -107,11 +112,13 @@ void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
                 kernelTraveltime,
                 CUDA_DEV_PTR(deviceParameterArray),
                 getParameterArrayStep()
-            );
+            ));
             break;
         default:
             throw invalid_argument("Invalid traveltime model");
     }
+
+    LOGI("Execution time for filtering kernel is " << kernelExecutionTime.count() << "s");
 
     CUDA_ASSERT(cudaGetLastError());
 
@@ -121,5 +128,6 @@ void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
 
     CUDA_ASSERT(cudaFree(deviceUsedTraceMaskArray));
 
-    copyOnlySelectedTracesToDevice(usedTraceMask);
-}
+    MEASURE_EXEC_TIME(copyTime, copyOnlySelectedTracesToDevice(usedTraceMask));
+
+    LOGI("Execution time for copying traces is " << copyTime.count() << "s");}

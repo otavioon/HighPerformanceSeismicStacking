@@ -1,3 +1,4 @@
+#include "common/include/execution/Utils.hpp"
 #include "common/include/output/Logger.hpp"
 #include "cuda/include/execution/CudaUtils.hpp"
 #include "cuda/include/semblance/algorithm/CudaDifferentialEvolutionAlgorithm.hpp"
@@ -5,6 +6,7 @@
 #include "cuda/include/semblance/kernel/base.h"
 #include "cuda/include/semblance/kernel/differential_evolution.h"
 
+#include <cmath>
 #include <sstream>
 #include <stdexcept>
 #include <stdlib.h>
@@ -68,7 +70,7 @@ void CudaDifferentialEvolutionAlgorithm::selectTracesToBeUsedForMidpoint(float m
     unsigned char* deviceUsedTraceMaskArray;
     CUDA_ASSERT(cudaMalloc((void **) &deviceUsedTraceMaskArray, traceCount * sizeof(char)));
 
-    dim3 dimGrid(traceCount / threadCount + 1);
+    dim3 dimGrid(static_cast<int>(ceil(traceCount / threadCount)));
 
     gpu_gather_data_t gatherData = gather->getGpuGatherData();
 
@@ -78,21 +80,24 @@ void CudaDifferentialEvolutionAlgorithm::selectTracesToBeUsedForMidpoint(float m
     kernelReferencePoint.m0 = m0;
     kernelReferencePoint.h0 = traveltime->getReferenceHalfoffset();
 
+    chrono::duration<double> kernelExecutionTime = chrono::duration<double>::zero();
+    chrono::duration<double> copyTime = chrono::duration<double>::zero();
+
     switch (traveltime->getModel()) {
         case CMP:
         case ZOCRS:
-            filterMidpointDependentTraces<<<dimGrid, threadCount>>>(
+            MEASURE_EXEC_TIME(kernelExecutionTime, filterMidpointDependentTraces<<<dimGrid, threadCount>>>(
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::MDPNT]),
                 traceCount,
                 deviceUsedTraceMaskArray,
                 kerneltraveltime,
                 gather->getApm(),
                 m0
-            );
+            ));
             break;
 
         case OCT:
-            filterOutTracesForOffsetContinuationTrajectoryAndDifferentialEvolution<<<dimGrid, threadCount>>>(
+            MEASURE_EXEC_TIME(kernelExecutionTime, filterOutTracesForOffsetContinuationTrajectoryAndDifferentialEvolution<<<dimGrid, threadCount>>>(
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::MDPNT]),
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::HLFOFFST]),
                 deviceUsedTraceMaskArray,
@@ -103,9 +108,11 @@ void CudaDifferentialEvolutionAlgorithm::selectTracesToBeUsedForMidpoint(float m
                 CUDA_DEV_PTR(deviceParameterArray),
                 individualsPerPopulation,
                 getParameterArrayStep()
-            );
+            ));
             break;
     }
+
+    LOGI("Execution time for filtering kernel is " << kernelExecutionTime.count() << "s");
 
     CUDA_ASSERT(cudaGetLastError());
     CUDA_ASSERT(cudaDeviceSynchronize());
@@ -113,7 +120,9 @@ void CudaDifferentialEvolutionAlgorithm::selectTracesToBeUsedForMidpoint(float m
     CUDA_ASSERT(cudaMemcpy(usedTraceMask.data(), deviceUsedTraceMaskArray, traceCount * sizeof(unsigned char), cudaMemcpyDeviceToHost));
     CUDA_ASSERT(cudaFree(deviceUsedTraceMaskArray));
 
-    copyOnlySelectedTracesToDevice(usedTraceMask);
+    MEASURE_EXEC_TIME(copyTime, copyOnlySelectedTracesToDevice(usedTraceMask));
+
+    LOGI("Execution time for copying traces is " << copyTime.count() << "s");
 }
 
 void CudaDifferentialEvolutionAlgorithm::setupRandomSeedArray() {

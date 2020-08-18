@@ -2,6 +2,7 @@
 #include "common/include/output/Dumper.hpp"
 
 #include <cerrno>
+#include <chrono>
 #include <iostream>
 #include <stdexcept>
 #include <thread>
@@ -91,6 +92,8 @@ void SingleHostRunner::workerThread(SingleHostRunner *ref) {
 int SingleHostRunner::main(int argc, const char *argv[]) {
 
     try {
+        chrono::steady_clock::time_point startTimePoint = chrono::steady_clock::now();
+
         Gather* gather = Gather::getInstance();
 
         unsigned int devicesCount = getNumOfDevices();
@@ -117,8 +120,6 @@ int SingleHostRunner::main(int argc, const char *argv[]) {
             threads[deviceId].join();
         }
 
-        // std::chrono::duration<double> elpsd_time = std::chrono::steady_clock::now() - st;
-
         Dumper dumper(parser->getOutputDirectory(), parser->getFilename());
 
         dumper.createDir();
@@ -135,6 +136,10 @@ int SingleHostRunner::main(int argc, const char *argv[]) {
             StatisticResult statResult = static_cast<StatisticResult>(i);
             dumper.dumpStatisticalResult(STATISTIC_NAME_MAP[statResult], resultSet->get(statResult));
         }
+
+        chrono::duration<double> totalExecutionTime = std::chrono::steady_clock::now() - startTimePoint;
+
+        LOGI("It took " << totalExecutionTime.count() << "s to compute.");
 
         return 0;
     }

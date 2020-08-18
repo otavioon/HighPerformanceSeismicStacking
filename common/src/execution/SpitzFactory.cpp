@@ -44,7 +44,6 @@ spits::committer *SpitzFactory::create_committer(
     spits::metrics& metrics
 ) {
     initialize(argc, argv);
-
     return new SpitzCommitter(traveltime, parser->getOutputDirectory(), parser->getFilename());
 }
 

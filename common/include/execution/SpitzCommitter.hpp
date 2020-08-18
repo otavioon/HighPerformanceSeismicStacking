@@ -3,6 +3,7 @@
 #include "common/include/model/Gather.hpp"
 #include "common/include/semblance/result/ResultSet.hpp"
 
+#include <chrono>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -25,6 +26,8 @@ class SpitzCommitter : public spits::committer {
         unsigned int taskCount, taskIndex;
 
         vector<float> tempResultArray;
+
+        chrono::steady_clock::time_point startTimePoint;
 
     public:
         SpitzCommitter(

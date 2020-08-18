@@ -4,6 +4,7 @@
 #include "common/include/execution/SpitzCommitter.hpp"
 #include "common/include/traveltime/Traveltime.hpp"
 
+#include <chrono>
 #include <memory>
 #include <sstream>
 
@@ -25,6 +26,8 @@ SpitzCommitter::SpitzCommitter(
 
     taskCount = gather->getTotalCdpsCount();
     taskIndex = 0;
+
+    startTimePoint = chrono::steady_clock::now();
 
     LOGI("[CO] Committer created.");
 }
@@ -48,14 +51,12 @@ int SpitzCommitter::commit_task(spits::istream& result) {
 
     taskIndex++;
 
-    LOGI("[CO] Result committed. [" << taskIndex << "," << taskCount << "]" << endl);
+    LOGI("[CO] Result committed. [" << taskIndex << "," << taskCount << "]");
 
     return 0;
 }
 
 int SpitzCommitter::commit_job(const spits::pusher& final_result) {
-
-    //std::chrono::duration<double> diff = std::chrono::steady_clock::now() - strt_tm;
 
     Dumper dumper(folderPath, filePath);
 
@@ -78,8 +79,9 @@ int SpitzCommitter::commit_job(const spits::pusher& final_result) {
     // A result must be pushed even if the final result is not passed on
     final_result.push(NULL, 0);
 
-    LOGI("[CO] Task completed.");
-    //LOGI("[CO] Task completed. It took %.3fs.", diff.count());
+    chrono::duration<double> totalExecutionTime = std::chrono::steady_clock::now() - startTimePoint;
+
+    LOGI("[CO] Job completed. It took " << totalExecutionTime.count() << "s");
 
     return 0;
 }

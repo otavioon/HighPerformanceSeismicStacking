@@ -1,3 +1,4 @@
+#include "common/include/execution/Utils.hpp"
 #include "common/include/semblance/algorithm/ComputeAlgorithm.hpp"
 #include "common/include/output/Logger.hpp"
 
@@ -111,6 +112,8 @@ void ComputeAlgorithm::copyOnlySelectedTracesToDevice(
 
     unsigned int traceCount = gather->getTotalTracesCount();
 
+    chrono::duration<double> copyExecutionTime = chrono::duration<double>::zero();
+
     filteredTracesCount = accumulate(usedTraceMask.begin(), usedTraceMask.end(), 0);
 
     LOGH("Selected " << filteredTracesCount << " traces");
@@ -129,7 +132,7 @@ void ComputeAlgorithm::copyOnlySelectedTracesToDevice(
 
             const Trace& trace = gather->getTraceAtIndex(i);
 
-            deviceFilteredTracesDataMap[GatherData::FILT_SAMPL]->copyFromWithOffset(trace.getSamples(), cudaArrayOffset);
+            MEASURE_EXEC_TIME(copyExecutionTime, deviceFilteredTracesDataMap[GatherData::FILT_SAMPL]->copyFromWithOffset(trace.getSamples(), cudaArrayOffset));
 
             tempMidpoint[idx] = trace.getMidpoint();
             tempHalfoffset[idx] = trace.getHalfoffset();
@@ -141,6 +144,8 @@ void ComputeAlgorithm::copyOnlySelectedTracesToDevice(
 
     deviceFilteredTracesDataMap[GatherData::FILT_MDPNT]->copyFrom(tempMidpoint);
     deviceFilteredTracesDataMap[GatherData::FILT_HLFOFFST]->copyFrom(tempHalfoffset);
+
+    LOGI("Copy time is " << copyExecutionTime.count());
 }
 
 void ComputeAlgorithm::changeThreadCountTemporarilyTo(unsigned int t) {
