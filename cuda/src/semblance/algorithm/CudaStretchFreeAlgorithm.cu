@@ -1,4 +1,5 @@
 #include "common/include/execution/Utils.hpp"
+#include "common/include/output/Logger.hpp"
 #include "cuda/include/execution/CudaUtils.hpp"
 #include "cuda/include/semblance/data/CudaDataContainer.hpp"
 #include "cuda/include/semblance/algorithm/CudaStretchFreeAlgorithm.hpp"
@@ -80,18 +81,18 @@ void CudaStretchFreeAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
     switch (traveltime->getModel()) {
         case CMP:
         case ZOCRS:
-            MEASURE_EXEC_TIME(kernelExecutionTime, filterMidpointDependentTraces<<<dimGrid, threadCount>>>(
+            MEASURE_EXEC_TIME(kernelExecutionTime, (filterMidpointDependentTraces<<<dimGrid, threadCount>>>(
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::MDPNT]),
                 traceCount,
                 deviceUsedTraceMaskArray,
                 traveltime->toGpuData(),
                 gather->getApm(),
                 m0
-            ));
+            )));
             break;
 
         case OCT:
-            MEASURE_EXEC_TIME(kernelExecutionTime, filterOutTracesForOffsetContinuationTrajectoryAndDifferentialEvolution<<<dimGrid, threadCount>>>(
+            MEASURE_EXEC_TIME(kernelExecutionTime, (filterOutTracesForOffsetContinuationTrajectoryAndStretchFree<<<dimGrid, threadCount>>>(
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::MDPNT]),
                 CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::HLFOFFST]),
                 deviceUsedTraceMaskArray,
@@ -101,7 +102,7 @@ void CudaStretchFreeAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
                 kerneltraveltime,
                 CUDA_DEV_PTR(nonStretchFreeParameters[m0]),
                 gather->getSamplesPerTrace()
-            ));
+            )));
             break;
     }
 
