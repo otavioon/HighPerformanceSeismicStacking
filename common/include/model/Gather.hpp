@@ -36,7 +36,7 @@ class Gather {
 
         static unique_ptr<Gather> instance;
 
-        bool isGatherRead;
+        bool isRead;
 
     public:
         static Gather* getInstance();

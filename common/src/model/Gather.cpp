@@ -34,7 +34,7 @@ Gather::Gather() :
     samplesCount(0),
     samplesPerTrace(0),
     tau(0),
-    isGatherRead(false) {
+    isRead(false) {
 }
 
 void Gather::add(const Trace& trace) {
@@ -43,7 +43,7 @@ void Gather::add(const Trace& trace) {
 }
 
 bool Gather::isGatherRead() const {
-    return isGatherRead;
+    return isRead;
 }
 
 void Gather::readGatherFromFile(const string& inFile) {
@@ -122,7 +122,7 @@ void Gather::readGatherFromFile(const string& inFile) {
 
     fin.close();
 
-    isGatherRead = true;
+    isRead = true;
 }
 
 void Gather::setAzimuthInDegree(float azInDeg) {
