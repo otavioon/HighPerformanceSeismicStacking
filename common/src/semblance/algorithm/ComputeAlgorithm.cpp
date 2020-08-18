@@ -103,6 +103,10 @@ void ComputeAlgorithm::saveStatisticalResults(
     computedStatisticalResults[StatisticResult::TOTAL_SELECTION_KERNEL_EXECUTION_TIME] = selectionExecutionTime.count();
 
     computedStatisticalResults[StatisticResult::TOTAL_KERNEL_EXECUTION_TIME] = totalExecutionTime.count();
+
+    LOGI("Total execution time for selecting traces is " << selectionExecutionTime.count() << "s");
+
+    LOGI("Total execution time for kernels is " << totalExecutionTime.count() << "s");
 }
 
 void ComputeAlgorithm::copyOnlySelectedTracesToDevice(
