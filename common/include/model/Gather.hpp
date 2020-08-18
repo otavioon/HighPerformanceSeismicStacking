@@ -36,6 +36,8 @@ class Gather {
 
         static unique_ptr<Gather> instance;
 
+        bool isGatherRead;
+
     public:
         static Gather* getInstance();
 
@@ -80,6 +82,8 @@ class Gather {
         float getLowestAllowedMidpoint() const;
 
         float getBiggestAllowedMidpoint() const;
+
+        bool isGatherRead() const;
 
         void readGatherFromFile(const string& inFile);
 

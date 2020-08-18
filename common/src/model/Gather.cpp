@@ -33,12 +33,17 @@ Gather::Gather() :
     biggestAllowedMidpoint(numeric_limits<float>::max()),
     samplesCount(0),
     samplesPerTrace(0),
-    tau(0) {
+    tau(0),
+    isGatherRead(false) {
 }
 
 void Gather::add(const Trace& trace) {
     traces.push_back(trace);
     samplesCount += static_cast<unsigned int>(trace.getSampleCount());
+}
+
+bool Gather::isGatherRead() const {
+    return isGatherRead;
 }
 
 void Gather::readGatherFromFile(const string& inFile) {
@@ -116,6 +121,8 @@ void Gather::readGatherFromFile(const string& inFile) {
     LOGI("Number of samples per trace = " << samplesPerTrace);
 
     fin.close();
+
+    isGatherRead = true;
 }
 
 void Gather::setAzimuthInDegree(float azInDeg) {

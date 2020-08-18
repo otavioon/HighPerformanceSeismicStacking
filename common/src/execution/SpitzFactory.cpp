@@ -16,8 +16,13 @@ SpitzFactory::SpitzFactory(
 }
 
 void SpitzFactory::initialize(int argc, const char *argv[]) {
+    Gather* gather = Gather::getInstance();
+
     parser->parseArguments(argc, argv);
-    parser->readGather();
+
+    if (!gather->isGatherRead()) {
+        parser->readGather();
+    }
 
     if (traveltime == nullptr) {
         LOGI("Initializing traveltime");
