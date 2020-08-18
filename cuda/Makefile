@@ -15,7 +15,7 @@ endif
 
 LDFLAGS += -lboost_program_options -lboost_system -lboost_filesystem -lm -lcuda
 CFLAGS += -Wall -fPIC -std=c++17 -Wno-sign-conversion
-NVCCFLAGS += --use_fast_math -Xcompiler -Wall -Xcompiler -fPIC -lcurand
+NVCCFLAGS += --use_fast_math -Xcompiler -Wall -Xcompiler -fPIC -lcurand -arch $(ARCH)
 
 #
 # Folder paths
