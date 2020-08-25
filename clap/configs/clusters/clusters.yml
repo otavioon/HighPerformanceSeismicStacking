@@ -1,0 +1,27 @@
+clusters:
+  spits-cluster:
+    before_all:
+    - setup-common
+    - setup-efs
+
+    before:
+    - setup-binaries
+
+    nodes:
+      spits-jobmanager:
+        type: spits-job-manager-instance-aws
+        count: 1
+        setups:
+        - setup-spits-jobmanager
+
+      spits-taskmanager:
+        type: spits-worker-instance-aws-{{ instance_type }}
+        count: 1
+        setups:
+        - setup-spits-taskmanager
+
+    after:
+    - setup-spits-start-bin
+
+    after_all:
+    - setup-spits-add-nodes
