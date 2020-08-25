@@ -229,7 +229,7 @@ void kernelCrossoverPopulationIndividuals(
 
         unsigned int individualArrayIndex = t0 * arrayStep + parameterIndex * individualsPerPopulation + individualIndex;
 
-        if (r > CR && l != parameterIndex++) {
+        if (r > CR && l != parameterIndex) {
             u[individualArrayIndex] = x[individualArrayIndex];
         }
         else {
