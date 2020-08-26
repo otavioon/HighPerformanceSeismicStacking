@@ -120,7 +120,7 @@ void ComputeAlgorithm::copyOnlySelectedTracesToDevice(
 
     filteredTracesCount = accumulate(usedTraceMask.begin(), usedTraceMask.end(), 0);
 
-    LOGH("Selected " << filteredTracesCount << " traces");
+    LOGI("Selected " << filteredTracesCount << " traces");
 
     /* Reallocate filtered sample array */
     deviceFilteredTracesDataMap[GatherData::FILT_SAMPL]->reallocate(filteredTracesCount * gather->getSamplesPerTrace());
