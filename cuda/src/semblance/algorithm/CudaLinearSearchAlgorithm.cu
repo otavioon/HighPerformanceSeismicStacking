@@ -70,6 +70,7 @@ void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
 
     unsigned char* deviceUsedTraceMaskArray;
     CUDA_ASSERT(cudaMalloc((void **) &deviceUsedTraceMaskArray, traceCount * sizeof(unsigned char)));
+    CUDA_ASSERT(cudaMemset(deviceUsedTraceMaskArray, 0, traceCount * sizeof(unsigned char)))
 
     dim3 dimGrid(static_cast<int>(ceil(traceCount / threadCount)));
 
