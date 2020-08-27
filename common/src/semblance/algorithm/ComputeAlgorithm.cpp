@@ -95,8 +95,12 @@ void ComputeAlgorithm::saveStatisticalResults(
     computedStatisticalResults[StatisticResult::INTR_PER_SEC] =
         static_cast<float>(interpolationsPerformed) / static_cast<float>(totalExecutionTime.count());
 
-    computedStatisticalResults[StatisticResult::EFFICIENCY] =
-        1.0f - static_cast<float>(notUsedTracesCount) / static_cast<float>(totalUsedTracesCount);
+    computedStatisticalResults[StatisticResult::EFFICIENCY] = 1.0f;
+
+    if (totalUsedTracesCount > 0) {
+        computedStatisticalResults[StatisticResult::EFFICIENCY] -=
+            static_cast<float>(notUsedTracesCount) / static_cast<float>(totalUsedTracesCount);
+    }
 
     computedStatisticalResults[StatisticResult::SELECTED_TRACES] = static_cast<float>(filteredTracesCount);
 
