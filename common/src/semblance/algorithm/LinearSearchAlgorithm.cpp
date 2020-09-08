@@ -77,10 +77,10 @@ void LinearSearchAlgorithm::computeSemblanceAndParametersForMidpoint(float m0) {
 
         if ((i + 1) % threadCount == 0 || (i + 1) == totalNumberOfParameters) {
 
-            if ((i + 1) == totalNumberOfParameters) {
+            if ((i + 1) == totalNumberOfParameters && totalNumberOfParameters % threadCount) {
                 changeThreadCountTemporarilyTo((i + 1) % threadCount);
             }
-            else if ((i + 1 + threadCount) >= totalNumberOfParameters) {
+            else if ((i + 1 + threadCount) > totalNumberOfParameters) {
                 /* Next time we'll be running kernel with a smaller # of threads, so update parameterArrayStep. */
                 LOGI("Changing parameterArrayStep to " << totalNumberOfParameters % threadCount);
                 parameterArrayStep = totalNumberOfParameters % threadCount;
