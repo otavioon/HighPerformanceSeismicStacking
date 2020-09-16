@@ -22,8 +22,6 @@ class SpitzFactory : public spits::factory {
 
         DeviceContextBuilder* deviceBuilder;
 
-        shared_ptr<mutex> taskMutex;
-
         shared_ptr<Traveltime> traveltime;
 
         unsigned int deviceCount = 0;

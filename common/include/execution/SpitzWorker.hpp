@@ -13,8 +13,7 @@ using namespace std;
 class SpitzWorker : public spits::worker {
     protected:
         unique_ptr<ComputeAlgorithm> computeAlgorithm;
-        shared_ptr<mutex> taskMutex;
     public:
-        SpitzWorker(ComputeAlgorithm* computeAlgorithm, shared_ptr<mutex> taskMutex);
+        SpitzWorker(ComputeAlgorithm* computeAlgorithm);
         int run(spits::istream& task, const spits::pusher& result);
 };

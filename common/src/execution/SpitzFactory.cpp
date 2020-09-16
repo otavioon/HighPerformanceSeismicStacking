@@ -12,7 +12,6 @@ SpitzFactory::SpitzFactory(
     ComputeAlgorithmBuilder* builder,
     DeviceContextBuilder* deviceBuilder
 ) : parser(p), builder(builder), deviceBuilder(deviceBuilder) {
-    taskMutex = make_shared<mutex>();
 }
 
 void SpitzFactory::initialize(int argc, const char *argv[]) {
@@ -67,5 +66,5 @@ spits::worker *SpitzFactory::create_worker(
 
     ComputeAlgorithm* computeAlgorithm = parser->parseComputeAlgorithm(builder, deviceContext, traveltime);
 
-    return new SpitzWorker(computeAlgorithm, taskMutex);
+    return new SpitzWorker(computeAlgorithm);
 }
