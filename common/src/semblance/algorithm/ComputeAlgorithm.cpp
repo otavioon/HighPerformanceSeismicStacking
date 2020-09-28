@@ -11,11 +11,11 @@ ComputeAlgorithm::ComputeAlgorithm(
     shared_ptr<Traveltime> model,
     shared_ptr<DeviceContext> context,
     DataContainerBuilder* dataBuilder
-) : algorithmName(name),
-    isSet(false),
+) : isSet(false),
+    dataFactory(dataBuilder),
+    algorithmName(name),
     deviceContext(context),
     traveltime(model),
-    dataFactory(dataBuilder),
     threadCount(1024),
     threadCountToRestore(threadCount),
     computedStatisticalResults(static_cast<unsigned int>(StatisticResult::CNT)) {
