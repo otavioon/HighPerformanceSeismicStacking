@@ -13,6 +13,12 @@ else
 	NVCCFLAGS += -O3
 endif
 
+ENABLE_PROFILING := no
+ifeq ($(ENABLE_PROFILING), yes)
+	CFLAGS += -DPROFILE_ENABLED
+	NVCCFLAGS += -DPROFILE_ENABLED
+endif
+
 LDFLAGS += -lboost_program_options -lboost_system -lboost_filesystem -lm -lcuda
 CFLAGS += -Wall -fPIC -std=c++17 -Wno-sign-conversion
 NVCCFLAGS += --use_fast_math -Xcompiler -Wall -Xcompiler -fPIC -lcurand -arch $(ARCH)

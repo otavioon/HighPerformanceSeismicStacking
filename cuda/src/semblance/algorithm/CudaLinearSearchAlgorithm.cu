@@ -11,6 +11,10 @@
 #include <sstream>
 #include <stdexcept>
 
+#ifdef PROFILE_ENABLED
+#include <cuda_profiler_api.h>
+#endif
+
 using namespace std;
 
 CudaLinearSearchAlgorithm::CudaLinearSearchAlgorithm(
@@ -43,6 +47,11 @@ void CudaLinearSearchAlgorithm::computeSemblanceAtGpuForMidpoint(float m0) {
     LOGD("getNumberOfResults = " << traveltime->getNumberOfResults());
     LOGD("sharedMemSizeCount = " << sharedMemSizeCount);
 
+#ifdef PROFILE_ENABLED
+    LOGI("CUDA Profiling is enabled.")
+    CUDA_ASSERT(cudaProfilerStart());
+#endif
+
     kernelLinearSearch<<< dimGrid, threadCount, sharedMemSizeCount >>>(
         CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::FILT_SAMPL]),
         CUDA_DEV_PTR(deviceFilteredTracesDataMap[GatherData::FILT_MDPNT]),
@@ -58,6 +67,11 @@ void CudaLinearSearchAlgorithm::computeSemblanceAtGpuForMidpoint(float m0) {
 
     CUDA_ASSERT(cudaDeviceSynchronize());
     CUDA_ASSERT(cudaGetLastError());
+
+#ifdef PROFILE_ENABLED
+    CUDA_ASSERT(cudaProfilerStop());
+    LOGI("CUDA Profiling is disabled.")
+#endif
 }
 
 void CudaLinearSearchAlgorithm::selectTracesToBeUsedForMidpoint(float m0) {
