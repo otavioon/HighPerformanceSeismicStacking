@@ -1,9 +1,10 @@
+#include <chrono>
 #include "common/include/execution/SpitzWorker.hpp"
 
 using namespace std;
 
-SpitzWorker::SpitzWorker(ComputeAlgorithm* computeAlgorithm)
-: computeAlgorithm(computeAlgorithm) {
+SpitzWorker::SpitzWorker(ComputeAlgorithm* computeAlgorithm, spits::metrics& metrics)
+: computeAlgorithm(computeAlgorithm), metrics(metrics) {
 }
 
 int SpitzWorker::run(spits::istream& task, const spits::pusher& result) {
@@ -18,9 +19,15 @@ int SpitzWorker::run(spits::istream& task, const spits::pusher& result) {
         computeAlgorithm->setUp();
     }
 
+    auto start = chrono::high_resolution_clock::now();
+    
     computeAlgorithm->computeSemblanceAndParametersForMidpoint(m0);
-
     const vector<float>& semblanceResults = computeAlgorithm->getComputedResults();
+    
+    auto end = chrono::high_resolution_clock::now();
+    double time_taken = chrono::duration_cast<chrono::nanoseconds>(end - start).count(); 
+    metrics.add_metric("semblance_time", time_taken);
+    
 
     outputStream.write_float(m0);
 
